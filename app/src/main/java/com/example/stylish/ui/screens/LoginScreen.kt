@@ -1,4 +1,4 @@
-package com.example.stylish.screens
+package com.example.stylish.ui.screens
 
 
 import androidx.compose.foundation.BorderStroke
@@ -9,6 +9,7 @@ import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -20,9 +21,18 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.sp
 import com.example.stylish.ui.components.ButtonComponent
 import com.example.stylish.ui.components.Header
 import com.example.stylish.ui.components.TextFieldComponent
+import com.example.stylish.ui.theme.DatkPink
+import com.example.stylish.ui.theme.MontserratFontBold
+import com.example.stylish.ui.theme.MontserratFontThin
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -44,8 +54,8 @@ fun LoginScreen(navController: NavController) {
         ) {}
 
 
-        Header()
-        Spacer(modifier = Modifier.height(16.dp))
+        Header("Welcome" , "Back!")
+        Spacer(modifier = Modifier.height(20.dp))
 
 
         TextFieldComponent(
@@ -56,7 +66,7 @@ fun LoginScreen(navController: NavController) {
 
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         TextFieldComponent(
             value = password,
@@ -66,22 +76,44 @@ fun LoginScreen(navController: NavController) {
                 ,
             isPassword = true
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             "Forgot Password?",
-            color = Color.Red,
+            color = DatkPink,
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
                     navController.navigate("forgot_password")
-                })
-        Spacer(modifier = Modifier.height(16.dp))
-        ButtonComponent {
+                },
+            fontFamily = MontserratFontThin ,
+            fontWeight = FontWeight(200),
+            fontSize = 15.sp)
+        Spacer(modifier = Modifier.height(25.dp))
+        ButtonComponent ({
             println("Login Clicked")
+        }  , "Login")
+        Spacer(modifier = Modifier.height(30.dp))
+        val annotatedText = buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.Gray)) {
+                append("Create An Account ")
+            }
+            withStyle(
+                style = SpanStyle(
+                    color = DatkPink,
+                    textDecoration = TextDecoration.Underline,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Sign Up")
+            }
         }
-        Spacer(modifier = Modifier.height(16.dp))
-        Text("Create An Account", color = Color.Red, modifier = Modifier.clickable {
-            navController.navigate("register")
-        })
+
+        Text(
+            text = annotatedText,
+            fontFamily = MontserratFontThin,
+            modifier = Modifier.clickable {
+                    navController.navigate("register")
+                },
+        )
     }
 }

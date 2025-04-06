@@ -5,9 +5,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.stylish.screens.ForgotPasswordScreen
-import com.example.stylish.screens.LoginScreen
-import com.example.stylish.screens.RegisterScreen
+import com.example.stylish.ui.screens.ForgotPasswordScreen
+import com.example.stylish.ui.screens.LoginScreen
+import com.example.stylish.ui.screens.RegisterScreen
 
 @Composable
 fun AppNavHost(navController: NavHostController = rememberNavController()) {
