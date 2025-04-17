@@ -1,5 +1,6 @@
 package com.example.stylish.ui.screens
 
+import android.R.attr.onClick
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,6 +9,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -17,8 +20,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stylish.R
 import com.example.stylish.data.Models.ShoppinglistItemModel
+import com.example.stylish.ui.components.ButtonComponent
 import com.example.stylish.ui.components.PaymentCardComponent
+import com.example.stylish.ui.components.PaymentSuccessDialog
 import com.example.stylish.ui.components.ShoppingListItemComponent
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
@@ -209,11 +216,35 @@ fun Checkout(modifier: Modifier = Modifier) {
                         )
                         Spacer(modifier= Modifier.height(10.dp))
                         PaymentCardComponent(R.drawable.visa,"*********2109")
+                        Spacer(modifier= Modifier.height(10.dp))
 
                     }
 
                 }
+                item{
+                    CheckoutScreen()
+                }
+
             }
         }
     )
+}
+@Composable
+fun CheckoutScreen() {
+    var showDialog by remember { mutableStateOf(false) }
+
+    Column(modifier = Modifier.padding(16.dp)) {
+        Spacer(modifier = Modifier.height(10.dp))
+
+        ButtonComponent(
+            onClick = { showDialog = true },
+            submitString = "Continue"
+        )
+    }
+
+    if (showDialog) {
+        PaymentSuccessDialog(
+            onDismissRequest = { showDialog = false }
+        )
+    }
 }
