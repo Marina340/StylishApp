@@ -15,26 +15,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.stylish.ui.components.AppNavHost
 import com.example.stylish.ui.theme.StylishTheme
+import com.example.stylish.presentation.pages.MainScreen
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            StylishTheme {
-//                AppNavHost()
-                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                        Surface(
-                            modifier = Modifier.fillMaxSize(),
-                            color = MaterialTheme.colorScheme.background
-                        ) {
-                            OnboardingScreen(modifier = Modifier.padding(innerPadding))
-                        }
-                    }
+            MainScreen()
 
 //                CheckoutScreen()
 
             }
         }
+    }
+}
+
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun GreetingPreview() {
+    StylishTheme {
+        Greeting("Android")
     }
 }
