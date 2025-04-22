@@ -1,13 +1,19 @@
-package com.example.stylish.ui.screens
+package com.example.stylish.ui.screens.CheckoutScreens
 
-import android.R.attr.onClick
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.outlined.ArrowBackIos
+import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -17,24 +23,41 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.stylish.R
-import com.example.stylish.data.Models.ShoppinglistItemModel
 import com.example.stylish.ui.components.ButtonComponent
 import com.example.stylish.ui.components.PaymentCardComponent
 import com.example.stylish.ui.components.PaymentSuccessDialog
 import com.example.stylish.ui.components.ShoppingListItemComponent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.stylish.data.Models.ShoppinglistItemModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
 fun Checkout(modifier: Modifier = Modifier) {
     val shoppingList = listOf(
-        ShoppinglistItemModel(R.drawable.item_image, "Women’s Casual Wear", listOf("black", "red"), 4.0, 36.6),
-        ShoppinglistItemModel(R.drawable.item_image, "Men’s Sport Jacket", listOf("blue", "green"), 4.5, 59.9),
-        ShoppinglistItemModel(R.drawable.item_image, "Kid’s Hoodie", listOf("yellow", "pink"), 4.2, 25.3)
+        ShoppinglistItemModel(
+            R.drawable.item_image,
+            "Women’s Casual Wear",
+            listOf("black", "red"),
+            4.0,
+            36.6
+        ),
+        ShoppinglistItemModel(
+            R.drawable.item_image,
+            "Men’s Sport Jacket",
+            listOf("blue", "green"),
+            4.5,
+            59.9
+        ),
+        ShoppinglistItemModel(
+            R.drawable.item_image,
+            "Kid’s Hoodie",
+            listOf("yellow", "pink"),
+            4.2,
+            25.3
+        )
     )
 
     Scaffold(

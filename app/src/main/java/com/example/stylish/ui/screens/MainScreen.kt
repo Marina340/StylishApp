@@ -7,6 +7,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.stylish.presentation.components.BottomNavBar
+import com.example.stylish.ui.screens.CheckoutScreens.Checkout
+import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 
 @Composable
 fun MainScreen() {
@@ -20,9 +22,9 @@ fun MainScreen() {
         Column(modifier = Modifier.padding(paddingValues)) {
             when (selectedScreen) {
                 0 -> HomeScreen()
-                1 -> ShoppingScreen()
+                1 -> ShoppingBagScreen()
                 2 -> SearchScreen()
-                3 -> SettingsScreen()
+                3 ->ProfileScreen()
             }
         }
     }
