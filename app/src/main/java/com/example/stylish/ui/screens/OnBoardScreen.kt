@@ -79,6 +79,7 @@ fun OnBoardItem(page: OnBoardModel) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun OnboardingScreen(
+    onFinish: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
      val pages = listOf(
@@ -203,26 +204,22 @@ fun OnboardingScreen(
                     )
                 }
             }
-
-
             Text(
-                nextString.value, style = TextStyle(
-                    color = Color(0xFFF83758),
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                ),
+                text = if (pagerState.currentPage == pages.lastIndex) "Get Started" else "Next",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFF83758),
                 modifier = Modifier.clickable {
-                    if (pagerState.currentPage < 2) {
-                        val nextPage = pagerState.currentPage + 1
-                        coroutineScope.launch { pagerState.animateScrollToPage(nextPage) }
+                    if (pagerState.currentPage < pages.lastIndex) {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                        }
+                    } else {
+                        // Last page, call onFinish
+                        onFinish()
                     }
-                    if(pagerState.currentPage ==1){
-                        nextString.value="Get Started"
-                    }
-
                 }
             )
-
         }
     }
 }

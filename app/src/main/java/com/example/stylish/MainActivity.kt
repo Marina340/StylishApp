@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -16,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.stylish.ui.components.AppNavHost
 import com.example.stylish.ui.theme.StylishTheme
 import com.example.stylish.presentation.pages.MainScreen
+import com.example.stylish.ui.components.AppNavigation
 
 
 class MainActivity : ComponentActivity() {
@@ -23,26 +25,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            MainScreen()
-
-//                CheckoutScreen()
-
+            StylishTheme {
+                Scaffold { paddingValues ->
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(paddingValues)) {
+                        AppNavigation()
+                    }
+                }
             }
         }
     }
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    StylishTheme {
-        Greeting("Android")
     }
-}
