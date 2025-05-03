@@ -15,7 +15,7 @@ import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontBold
 
 @Composable
-fun ButtonComponent(onClick: () -> Unit , submitString: String) {
+fun ButtonComponent(onClick:  () -> Unit, submitString: String) {
     Button(
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(

@@ -39,5 +39,5 @@ val MontserratFontBold = FontFamily(
 )
 
 val MontserratFontThin = FontFamily(
-    Font(R.font.montserratsemibold),
+    Font(R.font.montserratextrabold),
 )

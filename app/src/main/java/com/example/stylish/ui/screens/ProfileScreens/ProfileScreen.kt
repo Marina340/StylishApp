@@ -37,7 +37,7 @@ import com.example.stylish.ui.theme.MontserratFontBold
 import com.example.stylish.ui.theme.MontserratFontThin
 
 @Composable
-fun CheckoutScreen(/*navController: NavController*/) {
+fun ProfileScreen(/*navController: NavController*/) {
     Column(
         modifier = Modifier
             .fillMaxSize()
