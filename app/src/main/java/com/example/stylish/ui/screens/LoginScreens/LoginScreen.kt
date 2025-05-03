@@ -124,7 +124,7 @@ fun LoginScreen(navController: NavController) {
             modifier = Modifier
                 .align(Alignment.End)
                 .clickable {
-                    navController.navigate("forgot_password")
+                    navController.navigate("forgetpassword")
                 },
             fontFamily = MontserratFontThin ,
             fontWeight = FontWeight(200),

@@ -1,5 +1,6 @@
 package com.example.stylish.ui.components
 
+import HomeScreen
 import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -7,8 +8,10 @@ import androidx.navigation.compose.*
 import com.example.stylish.OnboardingScreen
 import com.example.stylish.data.isOnboardingCompleted
 import com.example.stylish.data.setOnboardingCompleted
-import com.example.stylish.ui.screens.LoginScreen
+import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
+import com.example.stylish.ui.screens.LoginScreens.LoginScreen
+import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 @Composable
@@ -43,6 +46,15 @@ fun AppNavigation(context: Context = LocalContext.current) {
             }
             composable("forgetpassword") {
                 ForgotPasswordScreen(navController)
+            }
+            composable("register") {
+                RegisterScreen(navController)
+            }
+            composable("home") {
+                MainScreen(navController)
+            }
+            composable("main") {
+                MainScreen(navController)
             }
         }
     } else {
