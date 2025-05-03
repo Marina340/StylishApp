@@ -5,6 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
@@ -15,6 +16,7 @@ fun AppNavHost(navController: NavHostController = rememberNavController()) {
         composable("login") { LoginScreen(navController) }
         composable("register") { RegisterScreen(navController) }
         composable("forgot_password") { ForgotPasswordScreen(navController) }
+        composable("main") { MainScreen() }
         //composable("checkout") { CheckoutScreen(navController) }
     }
 }

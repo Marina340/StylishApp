@@ -1,6 +1,7 @@
 package com.example.stylish.presentation.widget
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,9 +9,8 @@ import androidx.compose.ui.unit.dp
 import com.example.stylish.R
 import com.example.stylish.data.Models.Product
 
-
 @Composable
-fun ProductGrid() {
+fun horizontal_List() {
     val products = listOf(
         Product(R.drawable.ps4, "Sony PS4", "Sony PS4 Console, 1TB Slim with 3 Games", "₹1,999", 4.5f, "8,35,566"),
         Product(R.drawable.realme7, "Realme 7", "6GB RAM | 64GB ROM | Expandable Up to 256GB", "₹3,499", 4.2f, "3,44,567"),
@@ -25,10 +25,10 @@ fun ProductGrid() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 200.dp, max = 600.dp) // ✅ Allows grid to scroll inside LazyColumn
+            .heightIn(min = 200.dp, max = 250.dp) // ✅ Allows grid to scroll inside LazyColumn
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
+        LazyHorizontalGrid(
+            rows = GridCells.Fixed(1),
             modifier = Modifier.fillMaxSize(),
         ) {
             items(products.size) { index ->

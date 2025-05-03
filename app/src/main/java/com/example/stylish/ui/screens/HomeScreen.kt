@@ -11,8 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.stylish.presentation.widget.ProductGridd
+import com.example.stylish.presentation.widget.horizontal_List
 
 @Composable
 fun HomeScreen() {
@@ -27,19 +31,31 @@ fun HomeScreen() {
                 .padding(innerPadding), // Ensure content doesn't overlap with AppBar
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            item { SearchBar() }
             item { FeaturedSection() }
-            item { CategoryList() }
+           item { CategoryList () }
             item { BannerSection() }
+            item {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp),
+                    text = "Best Seller",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
+
+                )
+            }
+            item {
+                horizontal_List()
+            }
             item { DealsSection() }
             item {
                 Text(
+                    modifier = Modifier.padding(start = 16.dp),
                     text = "Products",
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp)
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp
                 )
             }
-            item { ProductGrid() }
+            item { ProductGridd() }
         }
     }
 }

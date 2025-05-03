@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import com.example.stylish.R
 import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Menu
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,18 +42,8 @@ fun CustomTopBar() {
                 )
             }
         },
+        // profile image for user :
         navigationIcon = {
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Menu,  // Built-in hamburger icon
-                    contentDescription = "Menu"
-                )
-            }
-            // 🔹 User Profile Image (Circular) on the left
-
-        },
-        actions = {
-            // 🔹 Drawable Action Icon (Menu icon) on the right
             Image(
 
                 painter = painterResource(id = R.drawable.userprofile), // Replace with your user image
@@ -62,6 +53,18 @@ fun CustomTopBar() {
                     .size(40.dp)
                     .clip(CircleShape) // Makes it circular
             )
+
+            // 🔹 feature 1: language changing
+
+        },
+        actions = {
+            // 🔹 Drawable Action Icon (Menu icon) on the right
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Language,  // Built-in hamburger icon
+                    contentDescription = "Menu"
+                )
+            }
         }
     )
 }
