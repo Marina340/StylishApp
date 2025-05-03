@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.fragment.app.FragmentActivity
 import com.example.stylish.ui.components.AppNavHost
+import com.example.stylish.ui.screens.CheckoutScreens.CheckoutScreen
 import com.example.stylish.ui.theme.StylishTheme
 
 

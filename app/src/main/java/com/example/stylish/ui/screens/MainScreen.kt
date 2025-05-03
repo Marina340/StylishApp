@@ -1,5 +1,6 @@
 package com.example.stylish.presentation.pages
 
+import HomeScreen
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -8,12 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import com.example.stylish.presentation.components.BottomNavBar
-import com.example.stylish.ui.screens.HomeScreen
 import com.example.stylish.ui.screens.CheckoutScreens.Checkout
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     var selectedScreen by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(

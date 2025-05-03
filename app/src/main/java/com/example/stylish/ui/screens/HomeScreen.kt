@@ -10,10 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.stylish.ui.components.Homepage.BannerSection
-import com.example.stylish.ui.components.Homepage.CustomTopBar
-
-
 @Composable
 fun HomeScreen(navController: NavController) {
     Scaffold(
