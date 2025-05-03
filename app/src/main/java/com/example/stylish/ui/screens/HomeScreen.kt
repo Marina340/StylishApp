@@ -1,6 +1,3 @@
-package com.example.stylish.presentation.pages
-import BannerSection
-import CustomTopBar
 import com.example.stylish.presentation.widget.SearchBar
 import com.example.stylish.presentation.widget.FeaturedSection
 import com.example.stylish.presentation.widget.CategoryList
@@ -12,10 +9,13 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.example.stylish.ui.components.Homepage.BannerSection
+import com.example.stylish.ui.components.Homepage.CustomTopBar
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
             CustomTopBar()

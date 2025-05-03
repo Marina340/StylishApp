@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -33,8 +34,11 @@ import androidx.navigation.NavController
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.Header
 import com.example.stylish.ui.components.LoginComponents.TextFieldComponent
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
+import android.widget.Toast
+import com.example.stylish.data.Models.LoginResponse
 
 @Composable
 fun RegisterScreen(navController: NavController) {
@@ -111,8 +115,29 @@ fun RegisterScreen(navController: NavController) {
         )
         Spacer(modifier = Modifier.height(25.dp))
 
+        val context = LocalContext.current
+        val prefs by remember { mutableStateOf(PrefsManager(context)) }
+
         ButtonComponent ({
-            println("Login Clicked")
+
+            if (username.isNotEmpty() && password.isNotEmpty() && password == confirmPassword) {
+                val fakeUser = LoginResponse(
+                    id = (1..1000).random(),
+                    username = username,
+                    email = "$username@email.com",
+                    firstName = "Demo",
+                    lastName = "User",
+                    gender = "male",
+                    image = "https://via.placeholder.com/150",
+                    token = password // بنستخدم الباسورد كتوكين مؤقتًا
+                )
+                prefs.saveUser(fakeUser)
+                Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
+                navController.navigate("login")
+            } else {
+                Toast.makeText(context, "Please check inputs", Toast.LENGTH_SHORT).show()
+            }
+
         }, "Create Account")
         Spacer(modifier = Modifier.height(30.dp))
 
