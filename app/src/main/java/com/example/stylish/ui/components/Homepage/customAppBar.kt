@@ -1,4 +1,5 @@
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.*
@@ -15,10 +16,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Menu
+import androidx.navigation.NavController
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun CustomTopBar() {
+fun CustomTopBar(navController: NavController) {
     TopAppBar(
         title = {
             Row(
@@ -30,7 +33,7 @@ fun CustomTopBar() {
                 Image(
                     painter = painterResource(id = R.drawable.logo), // Replace with your logo
                     contentDescription = "Brand Logo",
-                    modifier = Modifier.size(30.dp)
+                    modifier = Modifier.size(30.dp),
                 )
 
                 Spacer(modifier = Modifier.width(8.dp)) // Space between logo & text
@@ -51,7 +54,9 @@ fun CustomTopBar() {
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .size(40.dp)
-                    .clip(CircleShape) // Makes it circular
+                    .clip(CircleShape).clickable{
+                    navController.navigate("profile");
+                } // Makes it circular
             )
 
             // 🔹 feature 1: language changing
@@ -69,8 +74,8 @@ fun CustomTopBar() {
     )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewTopBar() {
-    CustomTopBar()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PreviewTopBar() {
+//    CustomTopBar()
+//}

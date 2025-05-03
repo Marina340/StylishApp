@@ -26,6 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.stylish.R
 import com.example.stylish.ui.components.ProfileComponents.CheckoutTopBar
 import com.example.stylish.ui.components.ProfileComponents.HorizontalLine
@@ -37,7 +38,7 @@ import com.example.stylish.ui.theme.MontserratFontBold
 import com.example.stylish.ui.theme.MontserratFontThin
 
 @Composable
-fun ProfileScreen(/*navController: NavController*/) {
+fun ProfileScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -45,8 +46,8 @@ fun ProfileScreen(/*navController: NavController*/) {
             .verticalScroll(rememberScrollState())
     ) {
 
-        Box(modifier = Modifier.height(20.dp)) {}
-        CheckoutTopBar({})
+//        Box(modifier = Modifier.height(20.dp)) {}
+        CheckoutTopBar({ navController.navigate("home")},)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -139,7 +140,7 @@ fun ProfileScreen(/*navController: NavController*/) {
             Spacer(modifier = Modifier.height(20.dp))
             TextFieldComponent("IFSC Code", "SBIN00428")
         }
-
+        Spacer(modifier = Modifier.height(20.dp))
         ButtonComponent({} , "Save")
     }
 }

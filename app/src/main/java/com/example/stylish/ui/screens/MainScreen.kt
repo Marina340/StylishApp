@@ -14,8 +14,8 @@ import com.example.stylish.ui.screens.CheckoutScreens.Checkout
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 import com.example.stylish.ui.screens.WishlistPage
 @Composable
-fun MainScreen() {
-    val navController = rememberNavController()
+fun MainScreen(navController: NavController) {
+//    val navController = rememberNavController()
     var selectedScreen by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
@@ -25,7 +25,7 @@ fun MainScreen() {
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             when (selectedScreen) {
-                0 -> HomeScreen( )
+                0 -> HomeScreen(navController)
                 1 -> SearchScreen()
                 2 -> ShoppingBagScreen()
                 3 -> WishlistPage()
@@ -35,8 +35,8 @@ fun MainScreen() {
     }
 }
 
-@Preview
-@Composable
-fun PreviewMainScreen() {
-    MainScreen()
-}
+//@Preview
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen()
+//}

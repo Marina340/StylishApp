@@ -22,7 +22,7 @@ import com.example.stylish.presentation.widget.horizontal_List
 fun HomeScreen(navController: NavController) {
     Scaffold(
         topBar = {
-            CustomTopBar()
+            CustomTopBar(navController)
         }
     ) { innerPadding ->
         LazyColumn(

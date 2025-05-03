@@ -1,6 +1,4 @@
 package com.example.stylish.ui.components
-
-import HomeScreen
 import android.content.Context
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
@@ -12,6 +10,7 @@ import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
+import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 @Composable
@@ -55,6 +54,9 @@ fun AppNavigation(context: Context = LocalContext.current) {
             }
             composable("main") {
                 MainScreen(navController)
+            }
+            composable("profile") {
+                ProfileScreen(navController)
             }
         }
     } else {
