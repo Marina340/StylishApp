@@ -18,11 +18,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.dataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
+import com.example.stylish.data.FavoriteDataStore
 import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -71,24 +76,46 @@ interface DummyJsonApiService {
 // ----------------------------
 // ViewModel
 // ----------------------------
-class ProductsViewModel : ViewModel() {
+class ProductsViewModel(private val favoriteDataStore: FavoriteDataStore) : ViewModel() {
     private val apiService = DummyJsonApiService.create()
 
     var products by mutableStateOf<List<Productt>>(emptyList())
     var isLoading by mutableStateOf(true)
     var error by mutableStateOf<String?>(null)
-    var favorites by mutableStateOf<List<Productt>>(emptyList())
+    private val _favorites = MutableStateFlow<List<Productt>>(emptyList()) // Private mutable state
+    val favorites: StateFlow<List<Productt>> = _favorites // Public immutable state
 
     init {
         loadProducts()
     }
 
+    // Observe favorite product IDs and update the favorite list accordingly
+    private fun observeFavorites() {
+        viewModelScope.launch {
+            favoriteDataStore.favoriteIds.collect { ids -> // Collect the favorite IDs
+                products = products.map { product ->
+                    product.copy(isFavorite = ids.contains(product.id.toString())) // Update each product's isFavorite flag
+                }
+                _favorites.value = products.filter { it.isFavorite } // Update the favorites state
+            }
+        }
+    }
+
+
+    // Load products from the API
     fun loadProducts() {
         viewModelScope.launch {
             try {
                 val response = apiService.getProducts()
-                products = response.products
+                val favoriteIds = favoriteDataStore.getFavoriteIds()
+
+                products = response.products.map {
+                    it.copy(isFavorite = favoriteIds.contains(it.id.toString()))
+                }
+
                 isLoading = false
+                _favorites.value = products.filter { it.isFavorite }
+                observeFavorites()
             } catch (e: Exception) {
                 error = e.message ?: "Unknown error occurred"
                 isLoading = false
@@ -96,16 +123,15 @@ class ProductsViewModel : ViewModel() {
         }
     }
 
+    // Toggle the favorite status of a product
+// Inside the ViewModel, ensure that _favorites is updated after toggling favorites.
     fun toggleFavorite(product: Productt) {
-        products = products.map {
-            if (it.id == product.id) {
-                it.copy(isFavorite = !it.isFavorite) // Update the product by creating a new one with flipped isFavorite
-            } else {
-                it
-            }
+        viewModelScope.launch {
+            favoriteDataStore.toggleFavorite(product.id) // Toggle favorite in DataStore
         }
-        favorites = products.filter { it.isFavorite } // Update the favorite list
     }
+
+
 }
 
 // ----------------------------
@@ -116,6 +142,7 @@ fun ProductCardd(
     product: Productt,
     onFavoriteClick: (Productt) -> Unit
 ) {
+    var isFavorite by remember { mutableStateOf(product.isFavorite) }
     Card(
         modifier = Modifier
             .width(180.dp)
@@ -134,9 +161,11 @@ fun ProductCardd(
                     contentScale = ContentScale.Crop
                 )
                 IconButton(
-                    onClick = { onFavoriteClick(product) },
+                    onClick = {
+                        onFavoriteClick(product) // Just call the ViewModel handler
+                    },
                     modifier = Modifier
-                        .align(Alignment.TopStart) // Icon on the left
+                        .align(Alignment.TopStart)
                         .padding(4.dp)
                 ) {
                     Icon(
@@ -145,6 +174,7 @@ fun ProductCardd(
                         tint = if (product.isFavorite) Color.Red else Color.Gray
                     )
                 }
+
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
@@ -172,7 +202,6 @@ fun ProductCardd(
         }
     }
 }
-
 @Composable
 fun Rating(rating: Float) {
     Row {
@@ -221,8 +250,9 @@ fun ProductGridd(viewModel: ProductsViewModel = viewModel()) {
                     modifier = Modifier.fillMaxSize()
                 ) {
                     items(viewModel.products.size) { index ->
+                        val product = viewModel.products[index]
                         ProductCardd(
-                            product = viewModel.products[index],
+                            product = product,
                             onFavoriteClick = { viewModel.toggleFavorite(it) }
                         )
                     }
@@ -231,7 +261,6 @@ fun ProductGridd(viewModel: ProductsViewModel = viewModel()) {
         }
     }
 }
-
 // ----------------------------
 // Wishlist Page
 // ----------------------------
