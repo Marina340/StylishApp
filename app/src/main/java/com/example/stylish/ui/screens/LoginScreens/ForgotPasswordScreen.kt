@@ -1,5 +1,6 @@
 package com.example.stylish.ui.screens.LoginScreens
 
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -33,6 +35,7 @@ import androidx.navigation.NavController
 import com.example.stylish.data.sendPasswordToEmail
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.Header
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.components.LoginComponents.TextFieldComponent
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
@@ -43,12 +46,27 @@ fun generateRandomPassword(length: Int = 10): String {
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*"
     return (1..length).map { chars.random() }.joinToString("")
 }
+fun updatePasswordForEmail(context: Context, email: String, newPassword: String) {
+    val prefs = PrefsManager(context)
+    val userList = prefs.getUserList().toMutableList()
+    val updatedList = userList.map { user ->
+        if (user.email == email) {
+            user.copy(token = newPassword)
+        } else {
+            user
+        }
+    }
+
+    // Save updated list
+    prefs.saveUserList(updatedList)
+}
+
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
     var email by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-
+    val context = LocalContext.current
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -108,6 +126,7 @@ fun ForgotPasswordScreen(navController: NavController) {
                         onSuccess = {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar("Password sent to email.")
+                                updatePasswordForEmail(context, email =email, newPassword = password)
                                 delay(1000)
                                 navController.navigate("login") {
                                     popUpTo("forgotPassword") { inclusive = true }

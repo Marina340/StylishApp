@@ -25,4 +25,9 @@ class PrefsManager(context: Context) {
     fun findUser(username: String, password: String): LoginResponse? {
         return getUserList().find { it.username == username && it.token == password }
     }
+    fun saveUserList(userList: List<LoginResponse>) {
+        val json = gson.toJson(userList)
+        prefs.edit().putString("user_list", json).apply()
+    }
+
 }
