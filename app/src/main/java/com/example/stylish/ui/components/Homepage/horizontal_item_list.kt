@@ -2,44 +2,72 @@ package com.example.stylish.presentation.widget
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.stylish.R
 import com.example.stylish.data.Models.Product
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
+//
 
 @Composable
-fun horizontal_List() {
-    val products = listOf(
-        Product(R.drawable.ps4, "Sony PS4", "Sony PS4 Console, 1TB Slim with 3 Games", "₹1,999", 4.5f, "8,35,566"),
-        Product(R.drawable.realme7, "Realme 7", "6GB RAM | 64GB ROM | Expandable Up to 256GB", "₹3,499", 4.2f, "3,44,567"),
-        Product(R.drawable.ps4, "Gaming Laptop", "16GB RAM | RTX 3060 | 1TB SSD", "₹8,999", 4.8f, "5,12,345"),
-        Product(R.drawable.realme7, "Wireless Headphones", "Noise Cancelling | 40hr Battery", "₹1,299", 4.6f, "2,12,789"),
-        Product(R.drawable.ps4, "DSLR Camera", "4K Video | 24MP | Wi-Fi", "₹5,999", 4.7f, "1,89,654"),        Product(R.drawable.realme7, "Wireless Headphones", "Noise Cancelling | 40hr Battery", "₹1,299", 4.6f, "2,12,789"),
-        Product(R.drawable.ps4, "DSLR Camera", "4K Video | 24MP | Wi-Fi", "₹5,999", 4.7f, "1,89,654"),        Product(R.drawable.realme7, "Wireless Headphones", "Noise Cancelling | 40hr Battery", "₹1,299", 4.6f, "2,12,789"),
-        Product(R.drawable.ps4, "DSLR Camera", "4K Video | 24MP | Wi-Fi", "₹5,999", 4.7f, "1,89,654"),        Product(R.drawable.realme7, "Wireless Headphones", "Noise Cancelling | 40hr Battery", "₹1,299", 4.6f, "2,12,789"),
-        Product(R.drawable.ps4, "DSLR Camera", "4K Video | 24MP | Wi-Fi", "₹5,999", 4.7f, "1,89,654"),
-    )
-
+fun ProductHorizontalList(
+    viewModel: ProductsViewModel = viewModel(),
+    onProductClick: (Productt) -> Unit
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = 200.dp, max = 250.dp) // ✅ Allows grid to scroll inside LazyColumn
+            .heightIn(min = 200.dp, max = 250.dp)
     ) {
-        LazyHorizontalGrid(
-            rows = GridCells.Fixed(1),
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            items(products.size) { index ->
-                ProductCard(
-                    imageRes = products[index].imageRes,
-                    title = products[index].title,
-                    description = products[index].description,
-                    price = products[index].price,
-                    rating = products[index].rating,
-                    reviews = products[index].reviews
+        when {
+            viewModel.isLoading -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Loading products...")
+                }
+            }
+            viewModel.error != null -> {
+                Text(
+                    text = "Error: ${viewModel.error}",
+                    modifier = Modifier.align(Alignment.Center)
                 )
+            }
+            else -> {
+                LazyHorizontalGrid(
+                    rows = GridCells.Fixed(1),
+                    modifier = Modifier.fillMaxSize(),
+                    state = rememberLazyGridState(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
+                ) {
+                    items(viewModel.products) { product ->
+                        ProductCardd(
+                            product = product,
+                            onFavoriteClick = { viewModel.toggleFavorite(it) },
+                            onProductClick = onProductClick,
+                            // modifier = Modifier.width(160.dp)
+                        )
+                    }
+                }
             }
         }
     }

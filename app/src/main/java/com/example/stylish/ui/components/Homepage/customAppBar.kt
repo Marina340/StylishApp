@@ -23,12 +23,20 @@ import androidx.navigation.NavController
 
 fun CustomTopBar(navController: NavController) {
     TopAppBar(
+
         title = {
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,  // Built-in hamburger icon
+                    contentDescription = "Menu"
+                )
+            }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
+
                 // 🔹 Brand Logo
                 Image(
                     painter = painterResource(id = R.drawable.logo), // Replace with your logo
@@ -46,7 +54,8 @@ fun CustomTopBar(navController: NavController) {
             }
         },
         // profile image for user :
-        navigationIcon = {
+
+        actions = {
             Image(
 
                 painter = painterResource(id = R.drawable.userprofile), // Replace with your user image
@@ -55,21 +64,10 @@ fun CustomTopBar(navController: NavController) {
                     .padding(horizontal = 10.dp)
                     .size(40.dp)
                     .clip(CircleShape).clickable{
-                    navController.navigate("profile");
-                } // Makes it circular
+                        navController.navigate("profile");
+                    } // Makes it circular
             )
 
-            // 🔹 feature 1: language changing
-
-        },
-        actions = {
-            // 🔹 Drawable Action Icon (Menu icon) on the right
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Language,  // Built-in hamburger icon
-                    contentDescription = "Menu"
-                )
-            }
         }
     )
 }

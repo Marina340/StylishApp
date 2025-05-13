@@ -33,7 +33,10 @@ fun WishlistPage(viewModel: ProductsViewModel = viewModel()) {
                 items(viewModel.favorites.size) { index ->
                     ProductCardd(
                         product = viewModel.favorites[index],
-                        onFavoriteClick = { viewModel.toggleFavorite(it) }
+                        onFavoriteClick = { viewModel.toggleFavorite(it) },
+                        onProductClick = { product ->
+                            // Handle product click, e.g., navigate to product detail screen
+                        }
                     )
                 }
             }
