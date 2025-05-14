@@ -13,8 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.presentation.components.BottomNavBar
-import com.example.stylish.ui.screens.CheckoutScreens.Checkout
-import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 import com.example.stylish.ui.screens.WishlistPage
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.WishlistPage
@@ -34,8 +32,8 @@ fun MainScreen(navController: NavController) {
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             when (selectedScreen) {
-                0 -> HomeScreen(navController,user)
-                1 -> SearchScreen()
+                0 -> HomeScreen(navController)
+                1 -> SearchScreen(navController)
                 2 -> ShoppingBagScreen()
                 3 -> WishlistPage()
                 4 -> SettingsScreen(navController)
@@ -44,3 +42,8 @@ fun MainScreen(navController: NavController) {
     }
 }
 
+//@Preview
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen()
+//}
