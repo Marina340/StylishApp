@@ -1,4 +1,4 @@
-//// Product.kt
+package com.example.stylish.domain.api//// Product.kt
 //data class Product(
 //    val id: Int,
 //    val title: String,

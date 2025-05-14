@@ -7,6 +7,7 @@ import com.example.stylish.OnboardingScreen
 import com.example.stylish.data.isOnboardingCompleted
 import com.example.stylish.data.setOnboardingCompleted
 import com.example.stylish.presentation.pages.MainScreen
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
@@ -14,8 +15,9 @@ import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 @Composable
-fun AppNavigation(context: Context = LocalContext.current) {
+fun AppNavigation(context: Context = LocalContext.current  ) {
     val navController = rememberNavController()
+    var prefsManager = remember { PrefsManager(context) }
     var startDestination by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -41,22 +43,26 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 )
             }
             composable("login") {
-                LoginScreen(navController)
+                LoginScreen(navController, prefsManager)
             }
             composable("forgetpassword") {
-                ForgotPasswordScreen(navController)
+                ForgotPasswordScreen(navController, prefsManager)
             }
             composable("register") {
-                RegisterScreen(navController)
+                RegisterScreen(navController, prefsManager)
             }
-            composable("home") {
-                MainScreen(navController)
+            composable("main") { backStackEntry ->
+                var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+                MainScreen(navController, prefsManager, user)
             }
-            composable("main") {
-                MainScreen(navController)
+            composable("profile") { backStackEntry ->
+                var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+                ProfileScreen(navController, prefsManager, user)
+
             }
-            composable("profile") {
-                ProfileScreen(navController)
+            composable("changePassword") { backStackEntry ->
+                val user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+                ChangePassword(navController, prefsManager, user)
             }
         }
     } else {

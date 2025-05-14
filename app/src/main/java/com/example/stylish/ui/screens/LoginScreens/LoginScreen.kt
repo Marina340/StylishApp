@@ -4,6 +4,7 @@ package com.example.stylish.ui.screens.LoginScreens
 
 //local username: mariammariam // password: 1234
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -48,12 +49,10 @@ import androidx.compose.ui.Alignment
 import androidx.fragment.app.FragmentActivity
 import com.example.stylish.ui.components.LoginComponents.authenticateWithBiometric
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
 
     val context = LocalContext.current
     val activity = context as? FragmentActivity
-
-
     var isBiometricAvailable by remember { mutableStateOf(true) }
 
 
@@ -132,17 +131,17 @@ fun LoginScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(25.dp))
 
         val context = LocalContext.current
-        val prefs by remember { mutableStateOf(PrefsManager(context)) }
         ButtonComponent ({
 
-            val localUser = prefs.findUser(username, password)
+            var localUser = prefs.findUser(username, password)
 
             if (localUser != null) {
                 Toast.makeText(context, "Login Successful (Local)", Toast.LENGTH_SHORT).show()
-                println("Local login successful for user: ${localUser.username}")
-                navController.navigate("main")
+                Log.i("successful","Local login successful for user: ${localUser.username}")
+                navController.currentBackStackEntry?.savedStateHandle?.set("user", localUser)
+                navController.navigate("main" )
             } else {
-                val loginRequest = LoginRequest(username = username, password = password)
+                var loginRequest = LoginRequest(username = username, password = password)
 
                 Api_client.api.login(loginRequest).enqueue(object : Callback<LoginResponse> {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
@@ -151,18 +150,19 @@ fun LoginScreen(navController: NavController) {
                             if (loginResponse != null) {
                                 prefs.saveUser(loginResponse)
                                 Toast.makeText(context, "Login Successful (API)", Toast.LENGTH_SHORT).show()
-                                println("API login successful for user: ${loginResponse.username}")
-                                navController.navigate("main")
+                                Log.d("successful","API login successful for user: ${loginResponse.username}")
+                                navController.currentBackStackEntry?.savedStateHandle?.set("user", loginResponse)
+                                navController.navigate("main" )
                             }
                         } else {
                             Toast.makeText(context, "Login Failed", Toast.LENGTH_SHORT).show()
-                            println("Login failed with code: ${response.code()}")
+                            Log.d("Login failed" , "Login failed with code: ${response.code()}")
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                         Toast.makeText(context, "Login Error", Toast.LENGTH_SHORT).show()
-                        println(" Login error: ${t.message}")
+                        Log.d("Login failed"," Login error: ${t.message}")
                     }
                 })
             }

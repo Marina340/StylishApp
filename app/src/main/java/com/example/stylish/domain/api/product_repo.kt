@@ -1,4 +1,4 @@
-//class ProductRepository(private val apiService: DummyJsonApiService) {
+package com.example.stylish.domain.api//class ProductRepository(private val apiService: DummyJsonApiService) {
 //    // The categories we're interested in
 //    private val targetCategories = listOf(
 //        "beauty",

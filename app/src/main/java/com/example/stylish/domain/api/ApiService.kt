@@ -1,4 +1,4 @@
-//import retrofit2.Retrofit
+package com.example.stylish.domain.api//import retrofit2.Retrofit
 //import retrofit2.converter.gson.GsonConverterFactory
 //import retrofit2.http.GET
 //

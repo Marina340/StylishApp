@@ -1,3 +1,5 @@
+package com.example.stylish.ui.components.Homepage
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,10 +20,18 @@ import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Menu
 import androidx.navigation.NavController
 
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 
-fun CustomTopBar(navController: NavController) {
+fun CustomTopBar(navController: NavController  , user :LoginResponse?) {
+    val profileImageUri = user?.image.takeIf { !it.isNullOrEmpty() } ?: "android.resource://${LocalContext.current.packageName}/${R.drawable.img}"
+
     TopAppBar(
         title = {
             Row(
@@ -45,31 +55,38 @@ fun CustomTopBar(navController: NavController) {
                 )
             }
         },
-        // profile image for user :
         navigationIcon = {
-            Image(
+            IconButton(onClick = {}) {
+                Icon(
+                    imageVector = Icons.Filled.Menu,  // Built-in hamburger icon
+                    contentDescription = "Menu"
+                )
+            }
+            // 🔹 User Profile Image (Circular) on the left
 
-                painter = painterResource(id = R.drawable.userprofile), // Replace with your user image
+        },
+        actions = {
+            // 🔹 Drawable Action Icon (Menu icon) on the right
+            Image(
+                painter = rememberImagePainter(
+                    data = profileImageUri,
+                    builder = {
+                        error(R.drawable.img) // صورة افتراضية عند حدوث خطأ
+                    }
+                ),
                 contentDescription = "User Profile",
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
                     .size(40.dp)
                     .clip(CircleShape).clickable{
+                        navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+                            navController.navigate("profile")
+
+                } // Makes it circular
+                    .clip(CircleShape).clickable{
                     navController.navigate("profile");
                 } // Makes it circular
             )
-
-            // 🔹 feature 1: language changing
-
-        },
-        actions = {
-            // 🔹 Drawable Action Icon (Menu icon) on the right
-            IconButton(onClick = {}) {
-                Icon(
-                    imageVector = Icons.Filled.Language,  // Built-in hamburger icon
-                    contentDescription = "Menu"
-                )
-            }
         }
     )
 }

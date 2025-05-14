@@ -39,34 +39,17 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.components.LoginComponents.TextFieldComponent
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 fun generateRandomPassword(length: Int = 10): String {
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*"
     return (1..length).map { chars.random() }.joinToString("")
 }
-fun updatePasswordForEmail(context: Context, email: String, newPassword: String) {
-    val prefs = PrefsManager(context)
-    val userList = prefs.getUserList().toMutableList()
-    val updatedList = userList.map { user ->
-        if (user.email == email) {
-            user.copy(token = newPassword)
-        } else {
-            user
-        }
-    }
-
-    // Save updated list
-    prefs.saveUserList(updatedList)
-}
-
 @Composable
-fun ForgotPasswordScreen(navController: NavController) {
+fun ForgotPasswordScreen(navController: NavController ,prefs: PrefsManager) {
     var email by remember { mutableStateOf("") }
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -126,7 +109,6 @@ fun ForgotPasswordScreen(navController: NavController) {
                         onSuccess = {
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar("Password sent to email.")
-                                updatePasswordForEmail(context, email =email, newPassword = password)
                                 delay(1000)
                                 navController.navigate("login") {
                                     popUpTo("forgotPassword") { inclusive = true }
@@ -152,4 +134,3 @@ fun ForgotPasswordScreen(navController: NavController) {
         )
     }
 }
-

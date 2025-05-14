@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Stylish"
 include(":app")
+ 
