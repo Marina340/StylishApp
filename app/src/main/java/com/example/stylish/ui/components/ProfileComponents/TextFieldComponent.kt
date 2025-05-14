@@ -1,5 +1,6 @@
 package com.example.stylish.ui.components.ProfileComponents
 
+
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,15 +17,20 @@ import androidx.compose.ui.unit.sp
 import com.example.stylish.ui.theme.MontserratFontThin
 
 @Composable
-fun TextFieldComponent (lable :String , placeholderText : String){
+fun TextFieldComponent (
+    lable :String ,
+    onValueChange: (String) -> Unit,
+    placeholderText : String,
+    readOnly  :Boolean
+){
 
     Text(text = lable, fontSize = 18.sp ,
         fontFamily = MontserratFontThin)
     Spacer(modifier = Modifier.height(10.dp) )
     OutlinedTextField(
         value = placeholderText,
-        onValueChange = {},
-        readOnly = true,
+        onValueChange = onValueChange,
+        readOnly = readOnly  ,
         modifier = Modifier
             .fillMaxWidth()
         ,
@@ -40,7 +46,10 @@ fun TextFieldComponent (lable :String , placeholderText : String){
 }
 
 @Composable
-fun PasswordFieldComponent (lable :String , placeholderText : String) {
+fun PasswordFieldComponent (
+    lable :String ,
+    onValueChange: (String) -> Unit,
+    placeholderText : String , readOnly  :Boolean) {
 
     Text(text = lable, fontSize = 18.sp,
         fontFamily = MontserratFontThin)
@@ -48,10 +57,10 @@ fun PasswordFieldComponent (lable :String , placeholderText : String) {
 
     OutlinedTextField(
         value = placeholderText,
-        onValueChange = {},
+        onValueChange =onValueChange ,
+        readOnly = readOnly  ,
         visualTransformation = PasswordVisualTransformation(),
-        readOnly = true
-        , modifier = Modifier
+        modifier = Modifier
             .fillMaxWidth()
         ,
         shape = RoundedCornerShape(12.dp),

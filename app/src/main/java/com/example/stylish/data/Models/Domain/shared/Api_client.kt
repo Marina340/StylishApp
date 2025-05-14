@@ -10,7 +10,6 @@ object Api_client {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
-
     val api: loginPoint by lazy {
         retrofit.create(loginPoint::class.java)
     }

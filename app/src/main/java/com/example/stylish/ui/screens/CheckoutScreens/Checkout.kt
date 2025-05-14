@@ -24,13 +24,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.stylish.R
-import com.example.stylish.ui.components.ButtonComponent
-import com.example.stylish.ui.components.PaymentCardComponent
-import com.example.stylish.ui.components.PaymentSuccessDialog
-import com.example.stylish.ui.components.ShoppingListItemComponent
+import com.example.stylish.ui.components.PaymentCardComponent.PaymentCardComponent
+import com.example.stylish.ui.components.PaymentCardComponent.PaymentSuccessDialog
+import com.example.stylish.ui.components.PaymentCardComponent.ShoppingListItemComponent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import com.example.stylish.data.Models.ShoppinglistItemModel
+import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")

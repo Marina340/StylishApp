@@ -1,4 +1,4 @@
-package com.example.stylish.ui.screens.LoginScreens
+package com.example.stylish.ui.screens.ProfileScreens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,7 +25,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,20 +36,18 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
 import android.widget.Toast
-import com.example.stylish.R
 import com.example.stylish.data.Models.LoginResponse
-import com.example.stylish.ui.components.LoginComponents.validateRegistrationInput
+
 
 @Composable
-fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
+fun ChangePassword(navController: NavController ,prefs: PrefsManager , user :LoginResponse?) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
 
-        var username by remember { mutableStateOf("") }
+        var newPassword by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
-        var confirmPassword by remember { mutableStateOf("") }
 
         Box(
             modifier = Modifier
@@ -60,19 +56,9 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
         ) {}
 
 
-        Header("Create an" , "Account")
+        Header("Change" , "Password")
 
         Spacer(modifier = Modifier.height(25.dp))
-        TextFieldComponent(
-            value = username,
-            onValueChange = { username = it },
-            placeholder = "Username or Email",
-            leadingIcon = Icons.Filled.Person
-
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
         TextFieldComponent(
             value = password,
             onValueChange = { password = it },
@@ -81,21 +67,34 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
             ,
             isPassword = true
         )
-
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            "Forgot Password?",
+            color = DatkPink,
+            modifier = Modifier
+                .align(Alignment.End)
+                .clickable {
+                    navController.navigate("forgetpassword")
+                },
+            fontFamily = MontserratFontThin ,
+            fontWeight = FontWeight(200),
+            fontSize = 15.sp)
         Spacer(modifier = Modifier.height(12.dp))
 
         TextFieldComponent(
-            value = confirmPassword,
-            onValueChange = { confirmPassword = it },
-            placeholder = "ConfirmPassword",
+            value = newPassword,
+            onValueChange = { newPassword = it },
+            placeholder = "New Password",
             leadingIcon =  Icons.Filled.Lock
             ,
             isPassword = true
         )
-        Spacer(modifier = Modifier.height(10.dp))
+
+        Spacer(modifier = Modifier.height(12.dp))
+
         val annotatedText1 = buildAnnotatedString {
             withStyle(style = SpanStyle(color = Color.Gray)) {
-                append("By clicking the ")
+                append("By changing your password, you confirm that you have the right to make this change and agree to our ")
             }
             withStyle(
                 style = SpanStyle(
@@ -103,12 +102,24 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
                     fontWeight = FontWeight.Bold
                 )
             ) {
-                append("Register")
+                append("Privacy Policy")
             }
             withStyle(style = SpanStyle(color = Color.Gray)) {
-                append(" button, you agree to the public offer")
+                append(" and ")
+            }
+            withStyle(
+                style = SpanStyle(
+                    color = DatkPink,
+                    fontWeight = FontWeight.Bold
+                )
+            ) {
+                append("Terms of Service")
+            }
+            withStyle(style = SpanStyle(color = Color.Gray)) {
+                append(".")
             }
         }
+
 
         Text(
             text = annotatedText1,
@@ -118,66 +129,16 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
         Spacer(modifier = Modifier.height(25.dp))
 
         val context = LocalContext.current
+
         ButtonComponent({
-
-            val (isValid, errorMessage) = validateRegistrationInput(username, password, confirmPassword)
-
-            if (isValid) {
-                // تحديد اسم المستخدم والبريد الإلكتروني بناءً على المدخل
-                val actualUsername = if (username.contains("@")) {
-                    username.substringBefore("@")
-                } else {
-                    username
-                }
-
-                val actualEmail = if (username.contains("@")) {
-                    username
-                } else {
-                    "$username@gmail.com"
-                }
-
-                // إنشاء كائن المستخدم
-                val user = LoginResponse(
-                    id = (1..1000).random(),
-                    username = actualUsername,
-                    email = actualEmail,
-                    firstName = "",
-                    lastName = "",
-                    gender = "male",
-                    image = R.drawable.img.toString(),
-                    token = password
-                )
-                prefs.saveUser(user)
-                Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
-                navController.navigate("login")
-            } else {
-                Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-            }
-        }, "Create Account")
+            if (prefs.updatePassword(user!!.username,password ,newPassword )){
+            Toast.makeText(context, "Update Password", Toast.LENGTH_SHORT).show()
+                navController.navigate("login" )
+}
+            else {Toast.makeText(context, "Something Error !!", Toast.LENGTH_SHORT).show()}
+        }, "Change")
 
         Spacer(modifier = Modifier.height(30.dp))
 
-        val annotatedText2 = buildAnnotatedString {
-            withStyle(style = SpanStyle(color = Color.Gray)) {
-                append("I Already Have an Account ")
-            }
-            withStyle(
-                style = SpanStyle(
-                    color = DatkPink,
-                    textDecoration = TextDecoration.Underline,
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append("Login")
-            }
-        }
-
-        Text(
-            text = annotatedText2,
-            fontFamily = MontserratFontThin,
-            modifier = Modifier.clickable {
-                navController.navigate("login")
-            },
-            )
     }
 }

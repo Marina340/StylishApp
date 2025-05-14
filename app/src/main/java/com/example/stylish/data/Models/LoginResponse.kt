@@ -1,12 +1,16 @@
 package com.example.stylish.data.Models
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class LoginResponse(
     val id: Int,
-    val username: String,
-    val email: String,
-    val firstName: String,
-    val lastName: String,
-    val gender: String,
-    val image: String,
-    val token: String
-)
+    var username: String,
+    var email: String,
+    var firstName: String,
+    var lastName: String,
+    var gender: String,
+    var image: String,
+    var token: String
+): Parcelable
