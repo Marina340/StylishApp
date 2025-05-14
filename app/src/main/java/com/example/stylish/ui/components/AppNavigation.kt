@@ -8,18 +8,21 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
 import com.example.stylish.OnboardingScreen
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.isOnboardingCompleted
 import com.example.stylish.data.setOnboardingCompleted
 import com.example.stylish.presentation.pages.HomeScreen
 import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.presentation.widget.Productt
 import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.CategoriesScreen
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
 import com.example.stylish.ui.screens.ProductDetailScreen
 import com.example.stylish.ui.screens.ProductListScreen
+import com.example.stylish.ui.screens.ProfileScreens.ChangePassword
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 //import com.example.stylish.ui.screens.ItemListScreen
@@ -28,8 +31,8 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AppNavigation(context: Context = LocalContext.current) {
-    val navController = rememberNavController()
     var prefsManager = remember { PrefsManager(context) }
+    val navController = rememberNavController()
     var startDestination by remember { mutableStateOf<String?>(null) }
     val coroutineScope = rememberCoroutineScope()
 
@@ -55,13 +58,13 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 )
             }
             composable("login") {
-                LoginScreen(navController, prefsManager)
+                LoginScreen(navController,prefsManager)
             }
             composable("forgetpassword") {
-                ForgotPasswordScreen(navController, prefsManager)
+                ForgotPasswordScreen(navController,prefsManager)
             }
             composable("register") {
-                RegisterScreen(navController, prefsManager)
+                RegisterScreen(navController,prefsManager)
             }
             composable("main") { backStackEntry ->
                 var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
@@ -76,12 +79,7 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 val user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
                 ChangePassword(navController, prefsManager, user)
             }
-        }
-    } else {
-        // Show loading while checking onboarding flag
-//        androidx.compose.material3.CircularProgressIndicator()
-    }
-}
+
 //***************
             composable("categories") {
                 CategoriesScreen(onCategoryClick = { category ->

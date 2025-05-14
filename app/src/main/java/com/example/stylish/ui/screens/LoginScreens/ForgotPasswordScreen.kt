@@ -39,6 +39,8 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.components.LoginComponents.TextFieldComponent
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 fun generateRandomPassword(length: Int = 10): String {
     val chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*"

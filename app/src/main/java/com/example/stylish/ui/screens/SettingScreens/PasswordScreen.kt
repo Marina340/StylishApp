@@ -1,5 +1,4 @@
 package com.example.settingscreen.SettingScreens
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,9 +15,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.settingscreen.R
-import com.example.settingscreen.ui.theme.pinkColor
-
+import com.example.stylish.R
+import com.example.stylish.ui.theme.pinkColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -110,13 +108,14 @@ fun PasswordField(label: String) {
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         modifier = Modifier.fillMaxWidth(),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = OutlinedTextFieldDefaults.colors(
             focusedBorderColor = pinkColor,
             unfocusedBorderColor = Color.Black.copy(alpha = 0.5f),
             focusedLabelColor = pinkColor,
             unfocusedLabelColor = Color.Black,
             cursorColor = pinkColor,
         )
+
     )
 }
 
