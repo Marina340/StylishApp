@@ -9,6 +9,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.presentation.components.BottomNavBar
 import com.example.stylish.ui.screens.CheckoutScreens.Checkout
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
@@ -29,7 +30,7 @@ fun MainScreen(navController: NavController) {
                 1 -> SearchScreen()
                 2 -> ShoppingBagScreen()
                 3 -> WishlistPage()
-                4 -> SettingsScreen()
+                4 -> SettingsScreen(navController)
             }
         }
     }
