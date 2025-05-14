@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">Stylish</string>
     <string name="onboardTitle1">Choose Products</string>
-    <string name="onboardDes1">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</string>
+    <string name="onboardDes1">Enjoy a seamless experience with minimal effort. Our service ensures smooth transactions and quick processing to help you get started effortlessly.</string>
     <string name="onboardTitle2">Make Payment</string>
-    <string name="onboardDes2">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</string>
+    <string name="onboardDes2">Easily complete your payments with secure methods, ensuring a fast and efficient transaction process without any hassle.</string>
     <string name="onboardTitle3">Get Your Order</string>
-    <string name="onboardDes3">Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit.</string>
+    <string name="onboardDes3">Receive your order promptly and enjoy a reliable delivery service with real-time updates, ensuring you stay informed throughout the process.</string>
 </resources>
