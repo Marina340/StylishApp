@@ -22,6 +22,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.stylish.R
 import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.theme.DatkPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,9 +47,7 @@ fun CustomTopBar(
                     contentDescription = "Brand Logo",
                     modifier = Modifier.size(30.dp),
                 )
-
                 Spacer(modifier = Modifier.width(8.dp))
-
                 Text(
                     text = "Stylish",
                     fontSize = 20.sp
@@ -55,6 +55,13 @@ fun CustomTopBar(
             }
         },
         navigationIcon = {
+            // Moved the menu icon to the left
+            IconButton(onClick = onMenuClick) {
+                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            }
+        },
+        actions = {
+            // Moved the user image to the right
             Image(
                 painter = painterResource(id = R.drawable.userprofile),
                 contentDescription = "User Profile",
@@ -67,24 +74,18 @@ fun CustomTopBar(
                         navController.navigate("profile")
                     }
             )
-        },
-        actions = {
-            IconButton(onClick = onMenuClick) {
-                Icon(Icons.Default.Menu, contentDescription = "Menu")
-            }
         }
     )
 }
-
 @Composable
-fun SidebarUI() {
+fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginResponse?) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .width(260.dp)
             .clip(RoundedCornerShape(topEnd = 32.dp, bottomEnd = 32.dp))
             .background(Color.White.copy(alpha = 0.9f))
-            .padding(16.dp)
+            .padding(10.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -96,34 +97,127 @@ fun SidebarUI() {
                     Icon(
                         imageVector = Icons.Filled.ShoppingCart,
                         contentDescription = "Logo",
-                        tint = Color.Red
+                        tint = DatkPink
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
                         "Stylish",
                         fontWeight = FontWeight.Bold,
                         fontSize = 18.sp,
-                        color = Color.Red
+                        color = DatkPink
                     )
                 }
 
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 SectionTitle("Overview")
-                MenuEntry(Icons.Default.Dashboard, "Dashboard")
-                MenuEntry(Icons.Default.ShoppingBag, "Product")
-                MenuEntryWithBadge(Icons.Default.Email, "Messages", "1")
-                MenuEntry(Icons.Default.ShoppingCart, "Order")
+
+                MenuEntry(
+                    icon = Icons.Default.Dashboard,
+                    label = "Dashboard",
+                    isSelected = currentRoute == "main"  // highlight if already on the main screen
+                ) {
+                    if (currentRoute != "main") {
+                        navController.navigate("main") {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+
+
+                MenuEntry(
+                    icon = Icons.Default.ShoppingBag,
+                    label = "Product",
+                    isSelected = currentRoute == Screen.ShoppingBagScreen.route
+                ) {
+                    if (currentRoute != Screen.ShoppingBagScreen.route) {
+                        navController.navigate(Screen.ShoppingBagScreen.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+
+                MenuEntry(
+                    icon = Icons.Default.Favorite,
+                    label = "Favourite",
+                    isSelected = currentRoute == Screen.WishListPage.route
+                ) {
+                    if (currentRoute != Screen.WishListPage.route) {
+                        navController.navigate(Screen.WishListPage.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+
+                MenuEntry(
+                    icon = Icons.Default.ShoppingCart,
+                    label = "Order",
+                    isSelected = currentRoute == Screen.ShoppingScreen.route
+                ) {
+                    if (currentRoute != Screen.ShoppingScreen.route) {
+                        navController.navigate(Screen.ShoppingScreen.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
+
+                MenuEntry(
+                    icon = Icons.Default.Settings,
+                    label = "Setting",
+                    isSelected = currentRoute == Screen.SettingsScreen.route
+                ) {
+                    if (currentRoute != Screen.SettingsScreen.route) {
+                        navController.navigate(Screen.SettingsScreen.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
 
                 Divider(modifier = Modifier.padding(vertical = 16.dp))
 
-                SectionTitle("Account")
-                MenuEntry(Icons.Default.Settings, "Setting")
-                MenuEntry(Icons.Default.Logout, "Logout")
+
+                MenuEntry(
+                    icon = Icons.Default.AccountCircle,
+                    label = "LogOut",
+                    isSelected = currentRoute == Screen.Profile.route
+                ) {
+                    if (currentRoute != Screen.Profile.route) {
+                        navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+                        navController.navigate(Screen.Profile.route) {
+                            launchSingleTop = true
+                        }
+                    }
+                }
             }
         }
     }
 }
+
+@Composable
+fun MenuEntry(
+    icon: ImageVector,
+    label: String,
+    isSelected: Boolean = false,
+    onClick: () -> Unit = {}
+) {
+    val textColor = if (isSelected) DatkPink else Color.Black
+    val backgroundColor = if (isSelected) Color(0x1AFF0000) else Color.Transparent
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(vertical = 6.dp)
+            .fillMaxWidth()
+            .background(backgroundColor, shape = RoundedCornerShape(8.dp))
+            .clickable(enabled = !isSelected) { onClick() }
+            .padding(8.dp)
+    ) {
+        Icon(icon, contentDescription = label, modifier = Modifier.size(20.dp), tint = textColor)
+        Spacer(modifier = Modifier.width(12.dp))
+        Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium, color = textColor)
+    }
+}
+
 
 @Composable
 fun SectionTitle(title: String) {
@@ -133,52 +227,4 @@ fun SectionTitle(title: String) {
         fontSize = 12.sp,
         modifier = Modifier.padding(vertical = 8.dp)
     )
-}
-
-@Composable
-fun MenuEntry(icon: ImageVector, label: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 6.dp)
-            .fillMaxWidth()
-            .clickable { /* TODO: Handle navigation */ }
-    ) {
-        Icon(icon, contentDescription = label, modifier = Modifier.size(20.dp))
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(label, fontSize = 16.sp, fontWeight = FontWeight.Medium)
-    }
-}
-
-@Composable
-fun MenuEntryWithBadge(icon: ImageVector, label: String, badgeText: String) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 6.dp)
-            .fillMaxWidth()
-            .clickable { /* TODO: Handle navigation */ }
-    ) {
-        Icon(icon, contentDescription = label, modifier = Modifier.size(20.dp))
-        Spacer(modifier = Modifier.width(12.dp))
-        Text(
-            label,
-            fontSize = 16.sp,
-            fontWeight = FontWeight.Medium,
-            modifier = Modifier.weight(1f)
-        )
-        Box(
-            modifier = Modifier
-                .size(20.dp)
-                .background(Color.Blue, CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                badgeText,
-                color = Color.White,
-                fontSize = 10.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
 }

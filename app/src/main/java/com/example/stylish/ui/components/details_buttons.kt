@@ -40,6 +40,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
+import com.example.stylish.presentation.widget.Productt
+import com.example.stylish.presentation.widget.Screen
 
 @Composable
 fun GrayActionButton(
@@ -108,9 +110,8 @@ fun RedActionButton(
         Text(text)
     }
 }
-
 @Composable
-fun CartButtons(navController: NavController) {
+fun CartButtons(navController: NavController, product: Productt) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,11 +124,14 @@ fun CartButtons(navController: NavController) {
             border = BorderStroke(1.dp, Color(0xFF9E9E9E)),
             color = Color.Transparent,
             onClick = {
-              //  navController.navigate("shopping_bag")
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("product", product)
+                navController.navigate(Screen.ShoppingScreen.route)
             }
         ) {
             Text(
-                text = "Go to cart",
+                text = "Add to cart",
                 modifier = Modifier
                     .padding(vertical = 12.dp)
                     .fillMaxWidth(),
@@ -140,7 +144,10 @@ fun CartButtons(navController: NavController) {
             shape = RoundedCornerShape(4.dp),
             color = Color(0xFF388E3C),
             onClick = {
-              //  navController.navigate("shopping_bag")
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("product", product)
+                navController.navigate("checkout")
             }
         ) {
             Text(

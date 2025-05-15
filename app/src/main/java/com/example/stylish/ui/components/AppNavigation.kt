@@ -7,16 +7,20 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import androidx.navigation.navArgument
+import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.OnboardingScreen
 import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.isOnboardingCompleted
 import com.example.stylish.data.setOnboardingCompleted
 import com.example.stylish.presentation.pages.HomeScreen
 import com.example.stylish.presentation.pages.MainScreen
+import com.example.stylish.presentation.pages.SearchScreen
+import com.example.stylish.presentation.pages.ShoppingBagScreen
 import com.example.stylish.presentation.widget.Productt
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.CategoriesScreen
+import com.example.stylish.ui.screens.CheckoutScreens.Checkout
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
@@ -24,6 +28,7 @@ import com.example.stylish.ui.screens.ProductDetailScreen
 import com.example.stylish.ui.screens.ProductListScreen
 import com.example.stylish.ui.screens.ProfileScreens.ChangePassword
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
+import com.example.stylish.ui.screens.WishlistPage
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 //import com.example.stylish.ui.screens.ItemListScreen
 import kotlinx.coroutines.Dispatchers
@@ -88,7 +93,7 @@ fun AppNavigation(context: Context = LocalContext.current) {
             }
             composable("products/{category}") { backStackEntry ->
                 val category = backStackEntry.arguments?.getString("category") ?: ""
-                ProductListScreen(category = category, onProductClick = {})
+                ProductListScreen(category = category, onProductClick = {}, navController)
             }
             // Product Detail Screen (accessible from anywhere in main flow)
             composable(Screen.ProductDetail.route) {
@@ -108,8 +113,16 @@ fun AppNavigation(context: Context = LocalContext.current) {
 
             composable("products/{category}") { backStackEntry ->
                 val category = backStackEntry.arguments?.getString("category") ?: ""
-                ProductListScreen(category = category, onProductClick = { /* handle product click */ })
+                ProductListScreen(category = category, onProductClick = { /* handle product click */ }, navController)
             }
+            //***************
+            composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen() }
+            composable(Screen.WishListPage.route) {WishlistPage() }
+            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen() }
+            composable(Screen.SettingsScreen.route) { SettingsScreen( navController) }
+            composable(Screen.SearchScreen.route) { SearchScreen( navController) }
+            composable(Screen.Checkout.route) { Checkout() }
+
 //            // Group selection screen for categories
 //            composable("categories") {
 //                GroupSelectionScreen(

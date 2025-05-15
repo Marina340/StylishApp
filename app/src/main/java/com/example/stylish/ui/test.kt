@@ -141,6 +141,16 @@ fun ProductGridd(viewModel: ProductsViewModel = viewModel(), category: String? =
 
 sealed class Screen(val route: String) {
 
+    object ShoppingBagScreen : Screen("product")
+    object WishListPage : Screen("favourite")
+    object ShoppingScreen : Screen("order")
+    object SettingsScreen : Screen("setting")
+    object Profile : Screen("profile")
+    object SearchScreen : Screen("search")
+    object Checkout : Screen("checkout")
+
+    //  object Profile : Screen("logout")
+//***********************
     object ItemList : Screen("items/{groupId}")
     object ProductGrid : Screen("product_grid")
     object ProductDetail : Screen("product_detail/{productId}") {

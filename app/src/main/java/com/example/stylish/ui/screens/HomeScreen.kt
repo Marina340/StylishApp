@@ -2,9 +2,6 @@ package com.example.stylish.presentation.pages
 
 import CustomTopBar
 import SidebarUI
-import com.example.stylish.presentation.widget.SearchBar
-import com.example.stylish.presentation.widget.FeaturedSection
-import com.example.stylish.presentation.widget.CategoryList
 import com.example.stylish.presentation.widget.DealsSection
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,22 +17,24 @@ import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.screens.CategoryRow
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
 import com.example.stylish.data.Models.LoginResponse
-import com.example.stylish.presentation.widget.ProductGridd
 import com.example.stylish.ui.components.Homepage.BannerSection
-import com.example.stylish.ui.components.LoginComponents.PrefsManager
 
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(navController: NavController, user: LoginResponse?) {
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            SidebarUI()
+
+            SidebarUI(navController = navController, currentRoute = currentRoute , user)
         }
     )
     {
@@ -73,7 +72,7 @@ fun HomeScreen(navController: NavController, user: LoginResponse?) {
                         )
                     }
                 }
-                item { BannerSection() }
+                item { BannerSection(    navController = navController) }
                 item {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
@@ -90,7 +89,7 @@ fun HomeScreen(navController: NavController, user: LoginResponse?) {
                         navController.navigate(Screen.ProductDetail.route)
                     })
                 }
-                item { DealsSection() }
+                item { DealsSection( navController) }
                 item {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
@@ -109,16 +108,7 @@ fun HomeScreen(navController: NavController, user: LoginResponse?) {
                         }
                     )
                 }
-                item {
-                    ProductGridd(
-                        onProductClick = { product ->
-                            navController.currentBackStackEntry
-                                ?.savedStateHandle
-                                ?.set("product", product)
-                            navController.navigate(Screen.ProductDetail.route)
-                        }
-                    )
-                }
+
             }
 
         }

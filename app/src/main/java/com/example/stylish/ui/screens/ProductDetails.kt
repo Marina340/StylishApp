@@ -86,6 +86,7 @@ import androidx.navigation.NavController
 import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.ProductsViewModel
 import com.example.stylish.presentation.widget.Screen
+import androidx.compose.material.icons.filled.ArrowBack
 
 @Composable
 fun ProductDetailScreen(product: Productt,navController: NavController) {
@@ -113,7 +114,21 @@ fun ProductDetailScreen(product: Productt,navController: NavController) {
                 contentScale = ContentScale.Crop
             )
 
-            // Favorite button
+            // Back arrow button (TopStart)
+            IconButton(
+                onClick = { navController.popBackStack() },
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    tint = Color.Black // Or Color.Black depending on your image
+                )
+            }
+
+            // Favorite button (TopEnd)
             IconButton(
                 onClick = { /* Handle favorite */ },
                 modifier = Modifier
@@ -123,28 +138,10 @@ fun ProductDetailScreen(product: Productt,navController: NavController) {
                 Icon(
                     imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = if (product.isFavorite) Color.Red else Color.White
+                    tint = if (product.isFavorite) Color.Red else Color.Black
                 )
             }
         }
-
-//        // Size Selector
-//        Column(modifier = Modifier.padding(16.dp)) {
-//            Text("Size: $selectedSize", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-//            Spacer(modifier = Modifier.height(8.dp))
-//            Row(
-//                horizontalArrangement = Arrangement.spacedBy(8.dp)
-//            ) {
-//                listOf("6 UK", "7 UK", "8 UK", "9 UK", "10 UK").forEach { size ->
-//                    FilterChip(
-//                        selected = size == selectedSize,
-//                        onClick = { selectedSize = size },
-//                        label = { Text(size) },
-//                        modifier = Modifier.padding(vertical = 4.dp)
-//                    )
-//                }
-//            }
-//        }
 
         // Product Title and Price
         // Product Title, Description and Price
@@ -278,7 +275,7 @@ fun ProductDetailScreen(product: Productt,navController: NavController) {
         }
 
 // Action Buttons
-        CartButtons( navController)
+        CartButtons( navController,product)
 
         // Similar Products Section
         Column(modifier = Modifier.padding(16.dp)) {

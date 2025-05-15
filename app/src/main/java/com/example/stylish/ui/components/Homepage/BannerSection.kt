@@ -11,66 +11,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stylish.R
-import kotlinx.coroutines.launch
 //import com.google.accompanist.pager.*
-import kotlinx.coroutines.launch
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
+import com.example.stylish.ui.theme.Pink80
 
 
 //****************
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.launch
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.unit.sp
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-//import androidx.compose.ui.graphics.CircleShape
-//import androidx.compose.foundation.image.ContentScale
-import kotlinx.coroutines.launch
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.foundation.shape.CircleShape
+import androidx.navigation.NavController
+import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.theme.DatkPink
 
 @Composable
-fun BannerSection() {
+fun BannerSection(navController: NavController) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
 
@@ -91,8 +50,8 @@ fun BannerSection() {
                 Image(
                     painter = painterResource(id = when (page) {
                         0 -> R.drawable.girl  // Replace with your drawables
-                        1 -> R.drawable.girl
-                        else -> R.drawable.girl
+                        1 -> R.drawable.banner2
+                        else -> R.drawable.banner3
                     }),
                     contentDescription = "Banner Image",
                     modifier = Modifier.fillMaxSize(),
@@ -113,18 +72,21 @@ fun BannerSection() {
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
                     Text(
-                        text = "Now in (product)",  // Example text
+                        text = " Buy It Now  ",  // Example text
                         color = Color.White,
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text = "All colours",  // Example text
+                        text = " All colours",  // Example text
                         color = Color.White,
                         fontSize = 14.sp,
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                     Button(
-                        onClick = { /* Handle click */ },
+                        onClick = {
+                            navController.navigate(Screen.SearchScreen.route)
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color.White,
                             contentColor = Color.Black
@@ -146,7 +108,7 @@ fun BannerSection() {
             horizontalArrangement = Arrangement.Center
         ) {
             repeat(3) { index ->
-                val color = if (pagerState.currentPage == index) Color.Red else Color.Gray
+                val color = if (pagerState.currentPage == index) DatkPink else Color.Gray
                 Box(
                     modifier = Modifier
                         .size(10.dp)

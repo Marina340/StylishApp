@@ -41,7 +41,7 @@ import coil.compose.rememberImagePainter
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         Text( text = product.description, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis )
-        Text( text = "₹${product.price}", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Black )
+        Text( text = "₹${product.price}", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Red )
         Row(verticalAlignment = Alignment.CenterVertically)  {
             Rating(rating = product.rating.toFloat())
             Spacer(modifier = Modifier.width(4.dp))

@@ -10,10 +10,11 @@ import androidx.compose.ui.tooling.preview.Preview
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
+import androidx.navigation.NavController
 
 @Composable
 fun DealsSection(
-    onViewAllClicked: () -> Unit = {}
+   navController: NavController
 ) {
     Card(
         modifier = Modifier
@@ -49,7 +50,9 @@ fun DealsSection(
 
             // "View all" Text Button
             TextButton(
-                onClick = onViewAllClicked,
+                onClick = {
+                    navController.navigate(Screen.SearchScreen.route)
+                },
                 modifier = Modifier.wrapContentWidth()
             ) {
                 Text(
@@ -63,12 +66,3 @@ fun DealsSection(
         }
     }
 }
-
-@Preview
-@Composable
-fun PreviewDealsSection() {
-    MaterialTheme {
-        DealsSection()
-    }
-}
-
