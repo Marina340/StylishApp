@@ -44,6 +44,16 @@ class PrefsManager(context: Context) {
         return updated
     }
 
+    fun deleteUser(username: String): Boolean {
+        val users = getUserList().toMutableList()
+        val removed = users.removeIf { it.username == username || it.email == username }
+        if (removed) {
+            prefs.edit().putString("user_list", gson.toJson(users)).apply()
+        }
+        return removed
+    }
+
+
     // PrefsManager.kt
 
     fun updateUserProfileImage(username: String, imageUri: String) {
@@ -65,5 +75,10 @@ class PrefsManager(context: Context) {
         return getUserList().find { it.username == username }
     }
 
+
+    fun saveUserList(userList: List<LoginResponse>) {
+        val json = gson.toJson(userList)
+        prefs.edit().putString("user_list", json).apply()
+    }
 
 }

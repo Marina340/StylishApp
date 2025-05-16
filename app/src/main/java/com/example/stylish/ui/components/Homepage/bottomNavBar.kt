@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,6 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stylish.R
 import com.example.stylish.presentation.pages.SearchScreen
+import com.example.stylish.ui.theme.DatkPink
+
 @Composable
 fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
     Box(
@@ -40,7 +43,7 @@ fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 icon = { Icon(Icons.Filled.Home, contentDescription = "Home") },
                 label = { Text("Home") },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Red,
+                    selectedIconColor = DatkPink,
                     unselectedIconColor = Color.Gray
                 )
             )
@@ -50,7 +53,7 @@ fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 icon = { Icon(Icons.Filled.Search, contentDescription = "Search") },
                 label = { Text("Search") },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Red,
+                    selectedIconColor = DatkPink,
                     unselectedIconColor = Color.Gray
                 )
             )
@@ -74,7 +77,7 @@ fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 icon = { Icon(Icons.Filled.Favorite, contentDescription = "Wishlist") },
                 label = { Text("Wishlist") },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Red,
+                    selectedIconColor = DatkPink,
                     unselectedIconColor = Color.Gray
                 )
             )
@@ -84,7 +87,7 @@ fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 icon = { Icon(Icons.Filled.Settings, contentDescription = "Settings") },
                 label = { Text("Settings") },
                 colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = Color.Red,
+                    selectedIconColor = DatkPink,
                     unselectedIconColor = Color.Gray
                 )
             )
@@ -97,14 +100,14 @@ fun BottomNavBar(selectedItem: Int, onItemSelected: (Int) -> Unit) {
                 .size(60.dp) // Standard FAB size, ensures circular shape
                 .align(Alignment.BottomCenter)
                 .offset(y = (-40).dp), // Half above the navigation bar
-            containerColor = if (selectedItem == 2) Color.Red else Color.White,
+            containerColor = if (selectedItem == 2) DatkPink else Color.White,
             shape = CircleShape,
             elevation = FloatingActionButtonDefaults.elevation(8.dp)
         ) {
             Icon(
-                painter = painterResource(R.drawable.logo),
+               Icons.Filled.ShoppingCart,
                 contentDescription = "Cart",
-                tint = if (selectedItem == 2) Color.White else Color.Red,
+                tint = if (selectedItem == 2) Color.White else DatkPink,
                 modifier = Modifier.size(24.dp)
             )
         }

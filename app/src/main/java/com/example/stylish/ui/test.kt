@@ -1,36 +1,24 @@
 package com.example.stylish.presentation.widget
 
-import androidx.compose.foundation.Image
+import android.os.Parcelable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil.compose.rememberImagePainter
 import com.google.gson.annotations.SerializedName
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
-
-// ----------------------------
-// Data Models
-// ----------------------------
+import kotlinx.parcelize.Parcelize
+@Parcelize
 data class Productt(
     @SerializedName("id") val id: Int,
     @SerializedName("title") val title: String,
@@ -39,22 +27,14 @@ data class Productt(
     @SerializedName("rating") val rating: Double,
     @SerializedName("stock") val stock: Int,
     @SerializedName("thumbnail") val thumbnail: String,
-    val isFavorite: Boolean = false // Make it immutable and use state management
-)
+    val category: String, // Added category for clarity
+    val isFavorite: Boolean = false
+) : Parcelable
 
-data class ProductsResponse(
-    @SerializedName("products") val products: List<Productt>,
-    @SerializedName("total") val total: Int,
-    @SerializedName("skip") val skip: Int,
-    @SerializedName("limit") val limit: Int
-)
 
-// ----------------------------
-// API Service
-// ----------------------------
-interface DummyJsonApiService {
-    @GET("products")
-    suspend fun getProducts(): ProductsResponse
+data class ProductsResponse( @SerializedName("products") val products: List<Productt>, @SerializedName("total") val total: Int, @SerializedName("skip") val skip: Int, @SerializedName("limit") val limit: Int )
+
+interface DummyJsonApiService { @GET("products") suspend fun getProducts(): ProductsResponse
 
     companion object {
         private const val BASE_URL = "https://dummyjson.com/"
@@ -66,11 +46,9 @@ interface DummyJsonApiService {
                 .create(DummyJsonApiService::class.java)
         }
     }
+
 }
 
-// ----------------------------
-// ViewModel
-// ----------------------------
 class ProductsViewModel : ViewModel() {
     private val apiService = DummyJsonApiService.create()
 
@@ -79,15 +57,27 @@ class ProductsViewModel : ViewModel() {
     var error by mutableStateOf<String?>(null)
     var favorites by mutableStateOf<List<Productt>>(emptyList())
 
+    private val allowedCategories = listOf(
+        "womens-bags", "womens-dresses", "womens-jewellery", "womens-shoes", "womens-watches",
+        "mens-shirts", "mens-shoes", "mens-watches", "skin-care", "tops", "beauty"
+    )
+
     init {
         loadProducts()
     }
 
-    fun loadProducts() {
+    fun loadProducts(category: String? = null) {
         viewModelScope.launch {
             try {
                 val response = apiService.getProducts()
-                products = response.products
+                val filteredProducts = if (category != null) {
+                    // Filter products by category (assuming category is in title or description)
+                    response.products.filter { it.category == category }
+                } else {
+                    response.products
+                }
+
+                products = filteredProducts
                 isLoading = false
             } catch (e: Exception) {
                 error = e.message ?: "Unknown error occurred"
@@ -99,104 +89,19 @@ class ProductsViewModel : ViewModel() {
     fun toggleFavorite(product: Productt) {
         products = products.map {
             if (it.id == product.id) {
-                it.copy(isFavorite = !it.isFavorite) // Update the product by creating a new one with flipped isFavorite
+                it.copy(isFavorite = !it.isFavorite)
             } else {
                 it
             }
         }
-        favorites = products.filter { it.isFavorite } // Update the favorite list
+        favorites = products.filter { it.isFavorite }
     }
 }
-
-// ----------------------------
-// Product Card
-// ----------------------------
 @Composable
-fun ProductCardd(
-    product: Productt,
-    onFavoriteClick: (Productt) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .width(180.dp)
-            .padding(8.dp),
-        elevation = CardDefaults.cardElevation(8.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
-    ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Box {
-                Image(
-                    painter = rememberImagePainter(product.thumbnail),
-                    contentDescription = product.title,
-                    modifier = Modifier
-                        .height(120.dp)
-                        .fillMaxWidth(),
-                    contentScale = ContentScale.Crop
-                )
-                IconButton(
-                    onClick = { onFavoriteClick(product) },
-                    modifier = Modifier
-                        .align(Alignment.TopStart) // Icon on the left
-                        .padding(4.dp)
-                ) {
-                    Icon(
-                        imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favorite",
-                        tint = if (product.isFavorite) Color.Red else Color.Gray
-                    )
-                }
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-            Text(
-                text = product.description,
-                fontSize = 12.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "₹${product.price}",
-                fontWeight = FontWeight.Bold,
-                fontSize = 14.sp,
-                color = Color.Black
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Rating(rating = product.rating.toFloat())
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "${product.stock} reviews",
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
-            }
-        }
-    }
-}
+fun ProductGridd(viewModel: ProductsViewModel = viewModel(), category: String? = null, onProductClick: (Productt) -> Unit) {
+    Box(modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp, max = 600.dp)) {
+        viewModel.loadProducts(category) // Load products based on category
 
-@Composable
-fun Rating(rating: Float) {
-    Row {
-        repeat(5) { index ->
-            Icon(
-                imageVector = Icons.Default.Star,
-                contentDescription = "Rating",
-                tint = if (index < rating) Color.Yellow else Color.Gray,
-                modifier = Modifier.size(16.dp)
-            )
-        }
-    }
-}
-
-// ----------------------------
-// Product Grid Page
-// ----------------------------
-@Composable
-fun ProductGridd(viewModel: ProductsViewModel = viewModel()) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .heightIn(min = 200.dp, max = 600.dp)
-    ) {
         when {
             viewModel.isLoading -> {
                 Column(
@@ -223,7 +128,8 @@ fun ProductGridd(viewModel: ProductsViewModel = viewModel()) {
                     items(viewModel.products.size) { index ->
                         ProductCardd(
                             product = viewModel.products[index],
-                            onFavoriteClick = { viewModel.toggleFavorite(it) }
+                            onFavoriteClick = { viewModel.toggleFavorite(it) },
+                            onProductClick = onProductClick
                         )
                     }
                 }
@@ -232,6 +138,24 @@ fun ProductGridd(viewModel: ProductsViewModel = viewModel()) {
     }
 }
 
-// ----------------------------
-// Wishlist Page
-// ----------------------------
+
+sealed class Screen(val route: String) {
+
+    object ShoppingBagScreen : Screen("product")
+    object WishListPage : Screen("favourite")
+    object ShoppingScreen : Screen("order")
+    object SettingsScreen : Screen("setting")
+    object Profile : Screen("profile")
+    object SearchScreen : Screen("search")
+    object Checkout : Screen("checkout")
+
+    //  object Profile : Screen("logout")
+//***********************
+    object ItemList : Screen("items/{groupId}")
+    object ProductGrid : Screen("product_grid")
+    object ProductDetail : Screen("product_detail/{productId}") {
+        fun createRoute(productId: Int): String = "product_detail/$productId"
+    }
+}
+
+//****************************

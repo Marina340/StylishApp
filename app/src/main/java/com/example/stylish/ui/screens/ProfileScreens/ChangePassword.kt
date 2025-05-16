@@ -70,6 +70,7 @@ fun ChangePassword(navController: NavController ,prefs: PrefsManager , user :Log
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             "Forgot Password?",
+
             color = DatkPink,
             modifier = Modifier
                 .align(Alignment.End)
