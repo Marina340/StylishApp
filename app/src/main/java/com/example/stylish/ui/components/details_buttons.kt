@@ -37,11 +37,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 // Reusable Gray Button Component
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.navigation.NavController
 import com.example.stylish.presentation.widget.Productt
 import com.example.stylish.presentation.widget.Screen
+import kotlinx.coroutines.launch
 
 @Composable
 fun GrayActionButton(
@@ -110,8 +112,13 @@ fun RedActionButton(
         Text(text)
     }
 }
+
 @Composable
 fun CartButtons(navController: NavController, product: Productt) {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
+    val scope = rememberCoroutineScope()
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,10 +131,10 @@ fun CartButtons(navController: NavController, product: Productt) {
             border = BorderStroke(1.dp, Color(0xFF9E9E9E)),
             color = Color.Transparent,
             onClick = {
-                navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("product", product)
-                navController.navigate(Screen.ShoppingScreen.route)
+                scope.launch {
+                    cartManager.addToCart(product)
+                    navController.navigate(Screen.ShoppingScreen.route)
+                }
             }
         ) {
             Text(
@@ -144,10 +151,10 @@ fun CartButtons(navController: NavController, product: Productt) {
             shape = RoundedCornerShape(4.dp),
             color = Color(0xFF388E3C),
             onClick = {
-                navController.currentBackStackEntry
-                    ?.savedStateHandle
-                    ?.set("product", product)
-                navController.navigate("checkout")
+                scope.launch {
+                    cartManager.addToCart(product)
+                    navController.navigate("checkout")
+                }
             }
         ) {
             Text(

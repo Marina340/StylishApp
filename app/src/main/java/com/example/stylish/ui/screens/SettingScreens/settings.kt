@@ -1,5 +1,6 @@
 package com.example.settingscreen.SettingScreens
 
+import CartManager
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -38,6 +39,11 @@ import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.components.ProfileComponents.saveImageToInternalStorage
 import com.example.stylish.ui.theme.DatkPink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +80,9 @@ fun SettingsScreen(navController: NavController , prefsManager: PrefsManager, us
 @Composable
 fun SettingsContent(modifier: Modifier = Modifier, navController: NavController, prefsManager: PrefsManager, user: LoginResponse?) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -119,7 +128,14 @@ fun SettingsContent(modifier: Modifier = Modifier, navController: NavController,
         SettingItem(
             title = "Log Out",
             iconRes = R.drawable.ic_logout,
-            onClick = { navController.navigate("login")}
+            onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    cartManager.clearCart()
+                    withContext(Dispatchers.Main) {
+                        navController.navigate("login")
+                    }
+                }
+            }
         )
     }
 }

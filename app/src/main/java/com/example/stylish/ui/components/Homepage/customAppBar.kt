@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,6 +26,10 @@ import com.example.stylish.R
 import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.theme.DatkPink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,6 +90,8 @@ fun CustomTopBar(
 }
 @Composable
 fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginResponse?) {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -188,8 +195,13 @@ fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginR
                     isSelected = currentRoute == Screen.Profile.route
                 ) {
                     if (currentRoute != Screen.Profile.route) {
-                        navController.navigate("login") {
-                            launchSingleTop = true
+                        CoroutineScope(Dispatchers.IO).launch {
+                            cartManager.clearCart()
+                            withContext(Dispatchers.Main) {
+                                navController.navigate("login") {
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     }
                 }

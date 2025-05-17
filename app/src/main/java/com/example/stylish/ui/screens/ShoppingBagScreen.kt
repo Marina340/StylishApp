@@ -1,4 +1,5 @@
 package com.example.stylish.presentation.pages
+import CartManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,24 +25,37 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import coil.compose.rememberImagePainter
 import com.example.stylish.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @Composable
 fun ShoppingBagScreen() {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
+    val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
+
+    val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
+    val excludedCategories = listOf("womens-bags", "womens-jewellery", "womens-watches",
+        "mens-watches", "skin-care", "beauty")
+
+
     val pinkColor = Color(0xFFE91E63)
     val lightGray = Color(0xFFF5F5F5)
 
-    var expandedSize by remember { mutableStateOf(false) }
-    var selectedSize by remember { mutableStateOf("42") }
-
-    var expandedQty by remember { mutableStateOf(false) }
-    var selectedQty by remember { mutableStateOf("1") }
-
+    val selectedSizeMap = remember { mutableStateMapOf<Int, String>() }
+    val selectedQtyMap = remember { mutableStateMapOf<Int, String>() }
+    val expandedSizeMap = remember { mutableStateMapOf<Int, Boolean>() }
+    val expandedQtyMap = remember { mutableStateMapOf<Int, Boolean>() }
     Scaffold(
         bottomBar = {
             Box(
@@ -52,7 +66,6 @@ fun ShoppingBagScreen() {
                     .clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp))
                     .background(lightGray)
                     .drawBehind {
-                        // Draw only the top border line
                         drawLine(
                             color = Color(0xFFCACACA),
                             start = Offset(0f, 0f),
@@ -73,7 +86,11 @@ fun ShoppingBagScreen() {
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text("₹ 7,000.00", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                            Text(
+                                "₹ ${totalAmount}.00",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
                             Text(
                                 text = "View Details",
                                 color = pinkColor,
@@ -83,7 +100,7 @@ fun ShoppingBagScreen() {
                             )
                         }
                         Button(
-                            onClick = { },
+                            onClick = { /* Proceed to Payment */ },
                             colors = ButtonDefaults.buttonColors(containerColor = pinkColor),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.height(48.dp)
@@ -94,8 +111,6 @@ fun ShoppingBagScreen() {
                 }
             }
         }
-
-
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -115,7 +130,7 @@ fun ShoppingBagScreen() {
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { }
+                        .clickable { /* Handle back */ }
                 )
                 Text(
                     "Shopping Bag",
@@ -130,65 +145,95 @@ fun ShoppingBagScreen() {
                     contentDescription = "Favorites",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { }
+                        .clickable { /* Handle favorites */ }
                 )
             }
 
-            // Product Section
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.product_image),
-                    contentDescription = "Product",
+            // Dynamic Product Section (loop over cartItems)
+            cartItems.forEach { item ->
+                // Initialize selectedSize and Qty if not set
+                if (!selectedSizeMap.containsKey(item.id)) selectedSizeMap[(item.id)] = "42"
+                if (!selectedQtyMap.containsKey(item.id)) selectedQtyMap[(item.id)] = "1"
+                if (!expandedSizeMap.containsKey(item.id)) expandedSizeMap[(item.id)] = false
+                if (!expandedQtyMap.containsKey(item.id)) expandedQtyMap[(item.id)] = false
+
+                Row(
                     modifier = Modifier
-                        .size(150.dp)
-                        .clip(RoundedCornerShape(8.dp)),
-                    contentScale = ContentScale.Crop
-                )
-
-                Spacer(modifier = Modifier.width(20.dp))
-
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp)
                 ) {
-                    Text("Women's Casual Wear", fontWeight = FontWeight.Bold)
-                    Text(
-                        "Checked Single-Breasted Blazer",
-
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 12.sp
+                    // Show product image if URL or resource id exists
+                    // For demonstration, using painterResource as placeholder
+                    Image(
+                        painter = rememberImagePainter(item.thumbnail), // Replace with your dynamic image loader if available
+                        contentDescription = item.description,
+                        modifier = Modifier
+                            .size(150.dp)
+                            .clip(RoundedCornerShape(8.dp)),
+                        contentScale = ContentScale.Crop
                     )
 
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        DropdownBox(
-                            label = "Size $selectedSize",
-                            expanded = expandedSize,
-                            onClick = { expandedSize = true },
-                            items = listOf("38", "40", "42", "44"),
-                            onItemClick = {
-                                selectedSize = it
-                                expandedSize = false
-                            }
-                        )
-                        DropdownBox(
-                            label = "Qty $selectedQty",
-                            expanded = expandedQty,
-                            onClick = { expandedQty = true },
-                            items = listOf("1", "2", "3", "4", "5"),
-                            onItemClick = {
-                                selectedQty = it
-                                expandedQty = false
-                            }
-                        )
-                    }
+                    Spacer(modifier = Modifier.width(20.dp))
 
-                    Row {
-                        Text("Delivery by ", fontSize = 12.sp)
-                        Text("10 May 2XXX", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    ) {
+                        Text(item.category ?: "Category", fontWeight = FontWeight.Bold)
+                        Text(
+                            item.title ?: "Product Name",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp
+                        )
+
+                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            if (item.category != null && !excludedCategories.contains(item.category)) {
+                                DropdownBox(
+                                    label = "Size ${selectedSizeMap[item.id]}",
+                                    expanded = expandedSizeMap[item.id] ?: false,
+                                    onClick = { expandedSizeMap[item.id] = true },
+                                    items = listOf("38", "40", "42", "44"),
+                                    onItemClick = {
+                                        selectedSizeMap[item.id] = it
+                                        expandedSizeMap[item.id] = false
+                                    },
+                                    onDismiss = {
+                                        expandedSizeMap[item.id] = false
+                                    }
+                                )
+                            }
+                            DropdownBox(
+                                label = "Qty ${selectedQtyMap[item.id]}",
+                                expanded = expandedQtyMap[item.id] ?: false,
+                                onClick = { expandedQtyMap[item.id] = true },
+                                items = listOf("1", "2", "3", "4", "5"),
+                                onItemClick = {
+                                    selectedQtyMap[item.id] = it
+                                    expandedQtyMap[item.id] = false
+                                },
+                                onDismiss = {
+                                    expandedQtyMap[item.id] = false
+                                }
+                            )
+                        }
+                        Spacer(modifier = Modifier.weight(1f))
+                        IconButton(
+                            onClick = {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    cartManager.removeFromCart(item)
+                                }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Delete,
+                                contentDescription = "Remove Item",
+                                tint = Color.Red
+                            )
+                        }
+                        Row {
+                            Text("Delivery by ", fontSize = 12.sp)
+                            Text("10 May 2XXX", fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        }
                     }
                 }
             }
@@ -203,7 +248,7 @@ fun ShoppingBagScreen() {
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_coupon), // Ensure this exists
+                        painter = painterResource(id = R.drawable.ic_coupon),
                         contentDescription = "Coupon",
                         tint = Color.Black,
                         modifier = Modifier.size(35.dp)
@@ -214,20 +259,19 @@ fun ShoppingBagScreen() {
                 Text(
                     text = "Select",
                     color = pinkColor,
-                    modifier = Modifier.clickable { },
+                    modifier = Modifier.clickable { /* Coupon selection */ },
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
             }
 
-            Divider(modifier = Modifier.padding(vertical = 19.dp), color = lightGray,thickness = 3.dp)
+            Divider(modifier = Modifier.padding(vertical = 19.dp), color = lightGray, thickness = 3.dp)
 
             Text("Order Payment Details", fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
             Box(modifier = Modifier.padding(top = 15.dp)) {
-                OrderDetailRow("Order Amounts", "₹ 7,000.00")
+                OrderDetailRow("Order Amounts", "₹ $totalAmount.00")
             }
-
 
             Row(
                 modifier = Modifier
@@ -245,26 +289,25 @@ fun ShoppingBagScreen() {
                         fontSize = 12.sp,
                         modifier = Modifier
                             .padding(start = 5.dp)
-                            .clickable { }
+                            .clickable { /* Show more info */ }
                     )
                 }
 
-                Spacer(modifier = Modifier.weight(1f)) // Pushes "Apply Coupon" to the end
+                Spacer(modifier = Modifier.weight(1f))
 
                 Text(
                     text = "Apply Coupon",
                     color = pinkColor,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { }
+                    modifier = Modifier.clickable { /* Apply coupon action */ }
                 )
             }
 
+            OrderDetailRow("Delivery Fee", "Free", valueColor = pinkColor)
 
-            OrderDetailRow("Delivery Fee", "Free",valueColor = pinkColor)
-
-            Divider(modifier = Modifier.padding(vertical = 19.dp), color = lightGray,thickness = 3.dp)
-            OrderDetailRow("Order Total", "₹ 7,000.00", isBold = true)
+            Divider(modifier = Modifier.padding(vertical = 19.dp), color = lightGray, thickness = 3.dp)
+            OrderDetailRow("Order Total", "₹ $totalAmount.00", isBold = true)
 
             Row(
                 verticalAlignment = Alignment.CenterVertically
@@ -276,7 +319,7 @@ fun ShoppingBagScreen() {
                     fontSize = 12.sp,
                     modifier = Modifier
                         .padding(start = 5.dp)
-                        .clickable { }
+                        .clickable { /* EMI details */ }
                 )
             }
         }
@@ -309,7 +352,8 @@ fun DropdownBox(
     expanded: Boolean,
     onClick: () -> Unit,
     items: List<String>,
-    onItemClick: (String) -> Unit
+    onItemClick: (String) -> Unit,
+    onDismiss: () -> Unit  // Add this param
 ) {
     Box(modifier = Modifier.height(36.dp)) {
         Row(
@@ -322,14 +366,19 @@ fun DropdownBox(
             Text(label, fontSize = 12.sp)
             Icon(Icons.Default.ArrowDropDown, contentDescription = null, tint = Color.Gray)
         }
-        DropdownMenu(expanded = expanded, onDismissRequest = { onItemClick(items[0]) }) {
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = onDismiss
+        ) {
             items.forEach { item ->
                 DropdownMenuItem(
                     text = { Text(item) },
-                    onClick = { onItemClick(item) }
+                    onClick = {
+                        onItemClick(item)
+                        onDismiss()
+                    }
                 )
             }
         }
     }
 }
-
