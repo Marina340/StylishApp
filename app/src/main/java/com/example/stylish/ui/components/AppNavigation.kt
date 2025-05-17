@@ -119,7 +119,14 @@ fun AppNavigation(context: Context = LocalContext.current) {
             composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen() }
             composable(Screen.WishListPage.route) {WishlistPage() }
             composable(Screen.ShoppingScreen.route) { ShoppingBagScreen() }
-            composable(Screen.SettingsScreen.route) { SettingsScreen( navController) }
+            composable(Screen.SettingsScreen.route) { backStackEntry ->
+                // جلب المستخدم من الحالة المحفوظة
+                val user = navController.previousBackStackEntry
+                    ?.savedStateHandle
+                    ?.get<LoginResponse>("user")
+
+                SettingsScreen(navController, prefsManager, user)
+            }
             composable(Screen.SearchScreen.route) { SearchScreen( navController) }
             composable(Screen.Checkout.route) { Checkout() }
 

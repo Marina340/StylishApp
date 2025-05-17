@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.example.stylish.R
 import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.presentation.widget.Screen
@@ -63,7 +64,12 @@ fun CustomTopBar(
         actions = {
             // Moved the user image to the right
             Image(
-                painter = painterResource(id = R.drawable.userprofile),
+                painter = rememberImagePainter(
+                    data = profileImageUri,
+                    builder = {
+                        error(R.drawable.img) // صورة افتراضية عند حدوث خطأ
+                    }
+                ),
                 contentDescription = "User Profile",
                 modifier = Modifier
                     .padding(horizontal = 10.dp)
@@ -182,8 +188,7 @@ fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginR
                     isSelected = currentRoute == Screen.Profile.route
                 ) {
                     if (currentRoute != Screen.Profile.route) {
-                        navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
-                        navController.navigate(Screen.Profile.route) {
+                        navController.navigate("login") {
                             launchSingleTop = true
                         }
                     }

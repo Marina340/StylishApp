@@ -6,14 +6,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.presentation.components.BottomNavBar
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.WishlistPage
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 @Composable
 fun MainScreen(navController: NavController,prefs: PrefsManager , user :LoginResponse?) {
 //    val navController = rememberNavController()
+
     var selectedScreen by rememberSaveable { mutableStateOf(0) }
 
     Scaffold(
@@ -27,9 +28,14 @@ fun MainScreen(navController: NavController,prefs: PrefsManager , user :LoginRes
                 1 -> SearchScreen(navController)
                 2 -> ShoppingBagScreen()
                 3 -> WishlistPage()
-                4 -> SettingsScreen(navController)
+                4 -> SettingsScreen(navController , prefs, user)
             }
         }
     }
 }
 
+//@Preview
+//@Composable
+//fun PreviewMainScreen() {
+//    MainScreen()
+//}
