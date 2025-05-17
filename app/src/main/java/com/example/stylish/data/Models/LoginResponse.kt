@@ -1,6 +1,7 @@
 package com.example.stylish.data.Models
 
 import android.os.Parcelable
+import com.example.stylish.data.Models.Domain.shared.AddressInfo
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -12,5 +13,6 @@ data class LoginResponse(
     var lastName: String,
     var gender: String,
     var image: String,
-    var token: String
+    var token: String,
+    var address: AddressInfo = AddressInfo()
 ): Parcelable

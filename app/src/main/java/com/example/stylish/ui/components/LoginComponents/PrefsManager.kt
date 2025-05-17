@@ -1,6 +1,7 @@
 package com.example.stylish.ui.components.LoginComponents
 
 import android.content.Context
+import com.example.stylish.data.Models.Domain.shared.AddressInfo
 import com.example.stylish.data.Models.LoginResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -80,5 +81,7 @@ class PrefsManager(context: Context) {
         val json = gson.toJson(userList)
         prefs.edit().putString("user_list", json).apply()
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.stylish.ui.screens.ProfileScreens
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -26,6 +28,7 @@ import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.R
+import com.example.stylish.data.Models.Domain.shared.AddressInfo
 import com.example.stylish.ui.components.ProfileComponents.HorizontalLine
 import com.example.stylish.ui.components.ProfileComponents.PasswordFieldComponent
 import com.example.stylish.ui.components.ProfileComponents.ProfileBoxWithDialog
@@ -44,14 +47,17 @@ fun ProfileScreen(navController: NavController ,prefsManager: PrefsManager, user
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
+        val context = LocalContext.current
+        var email by remember { mutableStateOf(user?.email ?: "") }
+        var password by remember { mutableStateOf(user?.token ?: "") }
 
-        var email by remember { mutableStateOf(user!!.email) }
-        var password by remember { mutableStateOf(user!!.token) }
-        var Pincode by remember { mutableStateOf("450116") }
-        var Address by remember { mutableStateOf("216 St Paul's Rd, ") }
-        var City by remember { mutableStateOf("London") }
-        var State by remember { mutableStateOf("N1 2LL,") }
-        var Country by remember { mutableStateOf("United Kingdom") }
+        val address = user?.address
+        var Pincode by remember { mutableStateOf(address?.pincode ?: "") }
+        var Address by remember { mutableStateOf(address?.address ?: "") }
+        var City by remember { mutableStateOf(address?.city ?: "") }
+        var State by remember { mutableStateOf(address?.state ?: "") }
+        var Country by remember { mutableStateOf(address?.country ?: "") }
+
         ProfileTopBar({
             navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
             navController.navigate("main")}
@@ -135,8 +141,25 @@ fun ProfileScreen(navController: NavController ,prefsManager: PrefsManager, user
 
         Spacer(modifier = Modifier.height(20.dp))
         ButtonComponent({
-            navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
-            navController.navigate("main" )
-        } , "Save")
+            if (user != null) {
+                // تحديث بيانات العنوان
+                user.address = AddressInfo(
+                    pincode = Pincode,
+                    address = Address,
+                    city = City,
+                    state = State,
+                    country = Country
+                )
+
+                // حفظ المستخدم المحدث
+                prefsManager.saveUser(user)
+                Toast.makeText(context, "Update successful", Toast.LENGTH_SHORT).show()
+
+                // الرجوع إلى الصفحة السابقة أو إظهار رسالة تأكيد
+                navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+                navController.navigate("main")
+            }
+        }, "Save")
+
     }
 }

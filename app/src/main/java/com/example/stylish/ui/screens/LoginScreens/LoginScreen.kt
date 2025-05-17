@@ -137,7 +137,6 @@ fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
 
             if (localUser != null) {
                 Toast.makeText(context, "Login Successful (Local)", Toast.LENGTH_SHORT).show()
-                Log.i("successful","Local login successful for user: ${localUser.username}")
                 navController.currentBackStackEntry?.savedStateHandle?.set("user", localUser)
                 navController.navigate("main" )
             } else {
