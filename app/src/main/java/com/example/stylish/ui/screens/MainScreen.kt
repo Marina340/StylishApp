@@ -26,7 +26,7 @@ fun MainScreen(navController: NavController,prefs: PrefsManager , user :LoginRes
             when (selectedScreen) {
                 0 -> HomeScreen(navController,user)
                 1 -> SearchScreen(navController)
-                2 -> ShoppingBagScreen()
+                2 -> ShoppingBagScreen(navController)
                 3 -> WishlistPage()
                 4 -> SettingsScreen(navController , prefs, user)
             }

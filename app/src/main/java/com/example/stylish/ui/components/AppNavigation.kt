@@ -116,9 +116,9 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 ProductListScreen(category = category, onProductClick = { /* handle product click */ }, navController)
             }
             //***************
-            composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen() }
+            composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen(navController) }
             composable(Screen.WishListPage.route) {WishlistPage() }
-            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen() }
+            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen(navController) }
             composable(Screen.SettingsScreen.route) { backStackEntry ->
                 // جلب المستخدم من الحالة المحفوظة
                 val user = navController.previousBackStackEntry

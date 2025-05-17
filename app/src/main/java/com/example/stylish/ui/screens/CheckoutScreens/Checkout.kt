@@ -1,5 +1,6 @@
 package com.example.stylish.ui.screens.CheckoutScreens
 
+import CartManager
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -15,6 +16,7 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.outlined.ArrowBackIos
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,36 +31,57 @@ import com.example.stylish.ui.components.PaymentCardComponent.PaymentSuccessDial
 import com.example.stylish.ui.components.PaymentCardComponent.ShoppingListItemComponent
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import com.example.stylish.data.Models.ShoppinglistItemModel
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
-fun Checkout(modifier: Modifier = Modifier) {
-    val shoppingList = listOf(
+fun Checkout() {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
+    val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
+    val shoppingListFromCart = cartItems.map { product ->
         ShoppinglistItemModel(
-            R.drawable.item_image,
-            "Women’s Casual Wear",
-            listOf("black", "red"),
-            4.0,
-            36.6
-        ),
-        ShoppinglistItemModel(
-            R.drawable.item_image,
-            "Men’s Sport Jacket",
-            listOf("blue", "green"),
-            4.5,
-            59.9
-        ),
-        ShoppinglistItemModel(
-            R.drawable.item_image,
-            "Kid’s Hoodie",
-            listOf("yellow", "pink"),
-            4.2,
-            25.3
+            image = product.thumbnail ?:"",  // fallback if null
+            itemName = product.title ?: "Unknown",                // String
+            variation =
+//            product.variations ?:
+            listOf("N/A"),     // List<String>
+            itemRate = product.rating ?: 0.0,                    // Double
+            itemPrice = product.price ?: 0.0
         )
-    )
+    }
+    val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
+
+//    val shoppingList = listOf(
+//        ShoppinglistItemModel(
+//            R.drawable.item_image,
+//            "Women’s Casual Wear",
+//            listOf("black", "red"),
+//            4.0,
+//            36.6
+//        ),
+//        ShoppinglistItemModel(
+//            R.drawable.item_image,
+//            "Men’s Sport Jacket",
+//            listOf("blue", "green"),
+//            4.5,
+//            59.9
+//        ),
+//        ShoppinglistItemModel(
+//            R.drawable.item_image,
+//            "Kid’s Hoodie",
+//            listOf("yellow", "pink"),
+//            4.2,
+//            25.3
+//        )
+//    )
 
     Scaffold(
         containerColor = Color.White,
@@ -84,7 +107,7 @@ fun Checkout(modifier: Modifier = Modifier) {
         },
         content = { innerPadding ->
             LazyColumn(
-                modifier = modifier
+                modifier = Modifier
                     .padding(innerPadding)
                     .padding(horizontal = 16.dp, vertical = 6.dp)
                     .fillMaxSize()
@@ -175,9 +198,11 @@ fun Checkout(modifier: Modifier = Modifier) {
                     }
                 }
 
-                items(shoppingList.size) { index ->
-                    ShoppingListItemComponent(shoppingList[index])
+                items(count = shoppingListFromCart.size) { index ->
+                    ShoppingListItemComponent(shoppingListFromCart[index])
                 }
+
+
 
                 item {
                     Column(modifier = Modifier.padding(16.dp)) {
@@ -192,7 +217,7 @@ fun Checkout(modifier: Modifier = Modifier) {
                                 color = Color(0xFF9E9E9E)
                             )
                             Text(
-                                text = "$7000",
+                                text = totalAmount.toString(),
                                 color = Color(0xFF9E9E9E)
                             )
                         }
@@ -207,7 +232,7 @@ fun Checkout(modifier: Modifier = Modifier) {
                                 color = Color(0xFF9E9E9E)
                             )
                             Text(
-                                text = "$70",
+                                text = "$3",
                                 color = Color(0xFF9E9E9E)
                             )
                         }
@@ -222,7 +247,7 @@ fun Checkout(modifier: Modifier = Modifier) {
                                 color = Color.Black
                             )
                             Text(
-                                text = "$7070",
+                                text = (totalAmount+70).toString(),
                                 color = Color.Black
                             )
                         }
@@ -255,6 +280,8 @@ fun Checkout(modifier: Modifier = Modifier) {
 @Composable
 fun CheckoutScreen() {
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Spacer(modifier = Modifier.height(10.dp))
@@ -267,7 +294,13 @@ fun CheckoutScreen() {
 
     if (showDialog) {
         PaymentSuccessDialog(
-            onDismissRequest = { showDialog = false }
+            onDismissRequest = {
+                showDialog = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    cartManager.clearCart()
+                }
+            }
         )
     }
 }
+

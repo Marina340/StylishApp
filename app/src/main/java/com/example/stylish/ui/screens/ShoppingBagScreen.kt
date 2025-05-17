@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color.Companion.Gray
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
+import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.stylish.R
 import kotlinx.coroutines.CoroutineScope
@@ -39,11 +40,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @Composable
-fun ShoppingBagScreen() {
+fun ShoppingBagScreen(navController: NavController) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
     val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
-
+    val scope = rememberCoroutineScope()
     val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
     val excludedCategories = listOf("womens-bags", "womens-jewellery", "womens-watches",
         "mens-watches", "skin-care", "beauty")
@@ -100,7 +101,11 @@ fun ShoppingBagScreen() {
                             )
                         }
                         Button(
-                            onClick = { /* Proceed to Payment */ },
+                            onClick = {
+                                scope.launch {
+                                    navController.navigate("checkout")
+                                }
+                            },
                             colors = ButtonDefaults.buttonColors(containerColor = pinkColor),
                             shape = RoundedCornerShape(12.dp),
                             modifier = Modifier.height(48.dp)
