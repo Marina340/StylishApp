@@ -28,9 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
-import com.example.stylish.data.Models.LoginRequest
-import com.example.stylish.data.Models.LoginResponse
-import com.example.stylish.data.Models.Domain.shared.Api_client
+import com.example.stylish.domain.shared.LoginRequest
+import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.domain.shared.Api_client
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.Header
 import com.example.stylish.ui.components.LoginComponents.TextFieldComponent

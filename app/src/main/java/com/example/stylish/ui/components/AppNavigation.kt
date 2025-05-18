@@ -4,34 +4,28 @@ import android.content.Context
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
-import androidx.navigation.navArgument
 import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.OnboardingScreen
-import com.example.stylish.data.Models.LoginResponse
-import com.example.stylish.data.isOnboardingCompleted
-import com.example.stylish.data.setOnboardingCompleted
-import com.example.stylish.presentation.pages.HomeScreen
+import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.models.Productt
+import com.example.stylish.data.local.isOnboardingCompleted
+import com.example.stylish.data.local.setOnboardingCompleted
 import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.presentation.pages.SearchScreen
 import com.example.stylish.presentation.pages.ShoppingBagScreen
-import com.example.stylish.presentation.widget.Productt
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
-import com.example.stylish.ui.screens.CategoriesScreen
+import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.CategoriesScreen
 import com.example.stylish.ui.screens.CheckoutScreens.Checkout
 import com.example.stylish.ui.screens.LoginScreens.ForgotPasswordScreen
 import com.example.stylish.ui.screens.LoginScreens.LoginScreen
 import com.example.stylish.ui.screens.LoginScreens.RegisterScreen
-import com.example.stylish.ui.screens.ProductDetailScreen
-import com.example.stylish.ui.screens.ProductListScreen
+import com.example.stylish.ui.screens.HomeScreens.ProductDetailScreen
+import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.ProductListScreen
 import com.example.stylish.ui.screens.ProfileScreens.ChangePassword
 import com.example.stylish.ui.screens.ProfileScreens.ProfileScreen
-import com.example.stylish.ui.screens.WishlistPage
-//import com.example.stylish.ui.screens.GroupSelectionScreen
-//import com.example.stylish.ui.screens.ItemListScreen
-import kotlinx.coroutines.Dispatchers
+import com.example.stylish.ui.screens.BNBscreens.WishlistPage
 import kotlinx.coroutines.launch
 
 @Composable
@@ -69,7 +63,7 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 ForgotPasswordScreen(navController,prefsManager)
             }
             composable("register") {
-                RegisterScreen(navController,prefsManager)
+                RegisterScreen(navController, prefsManager)
             }
             composable("main") { backStackEntry ->
                 var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
@@ -84,7 +78,12 @@ fun AppNavigation(context: Context = LocalContext.current) {
                 val user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
                 ChangePassword(navController, prefsManager, user)
             }
-
+            composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen(navController) }
+            composable(Screen.WishListPage.route) { WishlistPage(navController) }
+            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen(navController) }
+            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen( navController ) }
+            composable(Screen.SearchScreen.route) { SearchScreen( navController) }
+            composable(Screen.Checkout.route) { Checkout(navController) }
 //***************
             composable("categories") {
                 CategoriesScreen(onCategoryClick = { category ->
@@ -93,32 +92,44 @@ fun AppNavigation(context: Context = LocalContext.current) {
             }
             composable("products/{category}") { backStackEntry ->
                 val category = backStackEntry.arguments?.getString("category") ?: ""
-                ProductListScreen(category = category, onProductClick = {}, navController)
+                ProductListScreen(
+                    category = category, onProductClick = {}, navController
+//                    category = category,
+//                    onProductClick = { product ->
+//                        navController.previousBackStackEntry?.savedStateHandle?.set("product", product)
+//                        navController.navigate(Screen.ProductDetail.route)
+//                    },
+//                    navController
+                )
             }
             // Product Detail Screen (accessible from anywhere in main flow)
+//            composable(Screen.ProductDetail.route) {
+//                val product = navController.previousBackStackEntry
+//                    ?.savedStateHandle
+//                    ?.get<Productt>("product")
+//
+//                if (product != null) {
+//                    ProductDetailScreen(
+//                        product = product,
+//                        navController= navController,
+//                    )
+//                } else {
+//                    Text("Product not found")
+//                }
+//            }
+            // UPDATED destination
             composable(Screen.ProductDetail.route) {
                 val product = navController.previousBackStackEntry
                     ?.savedStateHandle
                     ?.get<Productt>("product")
 
                 if (product != null) {
-                    ProductDetailScreen(
-                        product = product,
-                        navController= navController,
-                    )
+                    ProductDetailScreen(product = product, navController = navController)
                 } else {
                     Text("Product not found")
                 }
             }
 
-            composable("products/{category}") { backStackEntry ->
-                val category = backStackEntry.arguments?.getString("category") ?: ""
-                ProductListScreen(category = category, onProductClick = { /* handle product click */ }, navController)
-            }
-            //***************
-            composable(Screen.ShoppingBagScreen.route) { ShoppingBagScreen(navController) }
-            composable(Screen.WishListPage.route) {WishlistPage() }
-            composable(Screen.ShoppingScreen.route) { ShoppingBagScreen(navController) }
             composable(Screen.SettingsScreen.route) { backStackEntry ->
                 // جلب المستخدم من الحالة المحفوظة
                 val user = navController.previousBackStackEntry
@@ -127,8 +138,7 @@ fun AppNavigation(context: Context = LocalContext.current) {
 
                 SettingsScreen(navController, prefsManager, user)
             }
-            composable(Screen.SearchScreen.route) { SearchScreen( navController) }
-            composable(Screen.Checkout.route) { Checkout() }
+
 
 //            // Group selection screen for categories
 //            composable("categories") {
@@ -138,6 +148,12 @@ fun AppNavigation(context: Context = LocalContext.current) {
 //                    }
 //                )
 //            }
+            //            composable("products/{category}") { backStackEntry ->
+//                val category = backStackEntry.arguments?.getString("category") ?: ""
+//                ProductListScreen(category = category, onProductClick = { /* handle product click */ }, navController)
+//            }
+            //***************
+
 //************************************************
 //            composable("itemlist/{groupId}") { backStackEntry ->
 //                val groupId = backStackEntry.arguments?.getString("groupId") ?: ""

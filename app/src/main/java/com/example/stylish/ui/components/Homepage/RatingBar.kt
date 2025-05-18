@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
 @Composable
-fun RatingBar(rating: Float) {
+fun RatingBar(rating: Double) {
     Row {
         repeat(5) { index ->
             val starColor = if (index < rating.toInt()) Color(0xFFFFD700) else Color.Gray

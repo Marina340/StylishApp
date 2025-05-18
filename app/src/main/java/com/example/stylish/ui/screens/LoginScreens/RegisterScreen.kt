@@ -39,9 +39,9 @@ import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
 import android.widget.Toast
 import com.example.stylish.R
-import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.validateRegistrationInput
-
+import com.example.stylish.data.Models.models.AddressInfo
+import com.example.stylish.domain.shared.LoginResponse
 @Composable
 fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
     Column(
@@ -145,7 +145,14 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
                     lastName = "",
                     gender = "male",
                     image = R.drawable.img.toString(),
-                    token = password
+                    token = password,
+                    address = AddressInfo(
+                        pincode = "450116",
+                        address = "216 St Paul's Rd",
+                        city = "London",
+                        state = "N1 2LL",
+                        country = "United Kingdom"
+                    )
                 )
                 prefs.saveUser(user)
                 Toast.makeText(context, "Account Created!", Toast.LENGTH_SHORT).show()
@@ -178,6 +185,6 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
             modifier = Modifier.clickable {
                 navController.navigate("login")
             },
-            )
+        )
     }
 }

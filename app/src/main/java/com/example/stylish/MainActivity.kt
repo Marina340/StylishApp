@@ -18,7 +18,6 @@ import com.example.stylish.ui.theme.StylishTheme
 import com.example.stylish.presentation.pages.MainScreen
 import com.example.stylish.ui.components.AppNavigation
 
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

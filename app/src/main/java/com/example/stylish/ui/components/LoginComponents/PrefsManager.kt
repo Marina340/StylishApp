@@ -1,7 +1,7 @@
 package com.example.stylish.ui.components.LoginComponents
 
 import android.content.Context
-import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.shared.LoginResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

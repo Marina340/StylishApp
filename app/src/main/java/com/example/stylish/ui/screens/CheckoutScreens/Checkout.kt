@@ -32,17 +32,17 @@ import com.example.stylish.ui.components.PaymentCardComponent.ShoppingListItemCo
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import com.example.stylish.data.Models.ShoppinglistItemModel
+import androidx.navigation.NavController
+import com.example.stylish.data.Models.models.ShoppinglistItemModel
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
-fun Checkout() {
+fun Checkout( navController: NavController) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
     val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
@@ -94,7 +94,7 @@ fun Checkout() {
                         )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* Handle back action */ }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Outlined.ArrowBackIos,
                             contentDescription = "Back"
