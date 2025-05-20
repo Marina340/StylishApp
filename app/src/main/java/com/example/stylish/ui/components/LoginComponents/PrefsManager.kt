@@ -1,8 +1,7 @@
 package com.example.stylish.ui.components.LoginComponents
 
 import android.content.Context
-import com.example.stylish.data.Models.Domain.shared.AddressInfo
-import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.shared.LoginResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -82,6 +81,23 @@ class PrefsManager(context: Context) {
         prefs.edit().putString("user_list", json).apply()
     }
 
+    // PrefsManager.kt
+
+    // ✅ حفظ حالة تسجيل الدخول
+    fun setLoggedIn(user: LoginResponse) {
+        saveUser(user)
+        prefs.edit().putBoolean("is_logged_in", true).apply()
+    }
+
+    // ✅ التحقق من حالة تسجيل الدخول
+    fun isLoggedIn(): Boolean {
+        return prefs.getBoolean("is_logged_in", false)
+    }
+
+    // ✅ تسجيل الخروج
+    fun logout() {
+        prefs.edit().putBoolean("is_logged_in", false).apply()
+    }
 
 
 }

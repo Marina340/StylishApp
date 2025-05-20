@@ -39,10 +39,9 @@ import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
 import android.widget.Toast
 import com.example.stylish.R
-import com.example.stylish.data.Models.Domain.shared.AddressInfo
-import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.validateRegistrationInput
-
+import com.example.stylish.data.Models.models.AddressInfo
+import com.example.stylish.domain.shared.LoginResponse
 @Composable
 fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
     Column(
@@ -186,6 +185,6 @@ fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
             modifier = Modifier.clickable {
                 navController.navigate("login")
             },
-            )
+        )
     }
 }

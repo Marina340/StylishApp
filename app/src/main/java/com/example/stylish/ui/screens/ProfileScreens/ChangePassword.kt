@@ -36,11 +36,11 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
 import android.widget.Toast
-import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.shared.LoginResponse
 
 
 @Composable
-fun ChangePassword(navController: NavController ,prefs: PrefsManager , user :LoginResponse?) {
+fun ChangePassword(navController: NavController ,prefs: PrefsManager , user : LoginResponse?) {
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,

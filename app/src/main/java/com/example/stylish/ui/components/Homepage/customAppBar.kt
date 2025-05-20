@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,20 +17,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.stylish.R
-import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopBar(
-    navController: NavController,
+    navController: NavController, prefs: PrefsManager,
     user: LoginResponse?,
     onMenuClick: () -> Unit
 ) {
@@ -84,7 +89,9 @@ fun CustomTopBar(
     )
 }
 @Composable
-fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginResponse?) {
+fun SidebarUI(navController: NavController,prefs: PrefsManager , currentRoute: String? , user: LoginResponse?) {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -188,8 +195,14 @@ fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginR
                     isSelected = currentRoute == Screen.Profile.route
                 ) {
                     if (currentRoute != Screen.Profile.route) {
-                        navController.navigate("login") {
-                            launchSingleTop = true
+                        CoroutineScope(Dispatchers.IO).launch {
+                            cartManager.clearCart()
+                            withContext(Dispatchers.Main) {
+                                prefs.logout()
+                                navController.navigate("login") {
+                                    launchSingleTop = true
+                                }
+                            }
                         }
                     }
                 }

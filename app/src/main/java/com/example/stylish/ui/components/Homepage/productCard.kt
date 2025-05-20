@@ -31,23 +31,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import coil.compose.rememberImagePainter
+import com.example.stylish.data.Models.models.Productt
 
-@Composable fun ProductCardd(product: Productt, onFavoriteClick: (Productt) -> Unit, onProductClick: (Productt) -> Unit ) { Card( modifier = Modifier .width(180.dp) .padding(8.dp) .clickable { onProductClick(product) }, elevation = CardDefaults.cardElevation(8.dp), colors = CardDefaults.cardColors(containerColor = Color.White) ) {
+@Composable fun ProductCardd(product: Productt,
+                             onFavoriteClick: (Productt) -> Unit,
+                             onProductClick: (Productt) -> Unit )
+{ Card(
+    modifier = Modifier .width(180.dp) .padding(8.dp)
+        .clickable { onProductClick(product) },
+    elevation = CardDefaults.cardElevation(8.dp),
+    colors = CardDefaults.cardColors(containerColor = Color.White) ) {
     Column(modifier = Modifier.padding(8.dp)) {
         Box {
             Image( painter = rememberImagePainter(product.thumbnail), contentDescription = product.title, modifier = Modifier .height(120.dp) .fillMaxWidth(), contentScale = ContentScale.Crop )
             IconButton( onClick = { onFavoriteClick(product) }, modifier = Modifier .align(Alignment.TopStart) .padding(4.dp) ) {
-                Icon( imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorite", tint = if (product.isFavorite) Color.Red else Color.Gray ) } }
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-        Text( text = product.description, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis )
-        Text( text = "₹${product.price}", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Red )
-        Row(verticalAlignment = Alignment.CenterVertically)  {
+            Icon( imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder, contentDescription = "Favorite", tint = if (product.isFavorite) Color.Red else Color.Gray ) } }
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = product.title, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text( text = product.description, fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis )
+            Text( text = "₹${product.price}", fontWeight = FontWeight.Bold, fontSize = 14.sp, color = Color.Red )
+            Row(verticalAlignment = Alignment.CenterVertically)  {
             Rating(rating = product.rating.toFloat())
             Spacer(modifier = Modifier.width(4.dp))
             Text( text = "${product.stock} reviews", fontSize = 12.sp, color = Color.Gray ) } } } }
 
-@Composable fun Rating(rating: Float) { Row { repeat(5) { index -> Icon( imageVector = Icons.Default.Star, contentDescription = "Rating", tint = if (index < rating) Color.Yellow else Color.Gray, modifier = Modifier.size(16.dp) ) } } }
+@Composable fun Rating(rating: Float) {
+    Row { repeat(5) { index -> Icon(
+        imageVector = Icons.Default.Star,
+        contentDescription = "Rating",
+        tint = if (index < rating) Color.Yellow else Color.Gray,
+        modifier = Modifier.size(16.dp) ) } }
+}
 
 
 
@@ -58,7 +72,7 @@ fun ProductCard(
     title: String,
     description: String,
     price: String,
-    rating: Float,
+    rating: Double,
     reviews: String
 ) {
     Card(
