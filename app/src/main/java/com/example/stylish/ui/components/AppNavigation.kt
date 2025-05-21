@@ -7,7 +7,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.compose.*
 import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.OnboardingScreen
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.Models.models.Productt
 import com.example.stylish.data.local.isOnboardingCompleted
 import com.example.stylish.data.local.setOnboardingCompleted
@@ -83,7 +83,8 @@ fun AppNavigation(context: Context = LocalContext.current) {
             composable(Screen.ShoppingScreen.route) { ShoppingBagScreen(navController) }
             composable(Screen.ShoppingScreen.route) { ShoppingBagScreen( navController ) }
             composable(Screen.SearchScreen.route) { SearchScreen( navController) }
-            composable(Screen.Checkout.route) { Checkout(navController) }
+            composable(Screen.Checkout.route) {backStackEntry -> val user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+                Checkout(navController,prefsManager) }
 //***************
             composable("categories") {
                 CategoriesScreen(onCategoryClick = { category ->

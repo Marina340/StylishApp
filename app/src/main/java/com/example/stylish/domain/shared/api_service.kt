@@ -1,5 +1,6 @@
 package com.example.stylish.domain.shared
 
+import com.example.stylish.data.Models.LoginResponse
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.POST

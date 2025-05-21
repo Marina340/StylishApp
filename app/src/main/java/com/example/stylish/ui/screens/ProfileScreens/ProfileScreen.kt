@@ -23,8 +23,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.Models.models.AddressInfo
-import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.components.ProfileComponents.HorizontalLine

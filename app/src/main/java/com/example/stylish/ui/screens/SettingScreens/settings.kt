@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import com.example.stylish.R
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import kotlinx.coroutines.CoroutineScope
@@ -69,6 +69,8 @@ fun SettingsScreen(navController: NavController , prefsManager: PrefsManager, us
 
 @Composable
 fun SettingsContent(modifier: Modifier = Modifier, navController: NavController, prefsManager: PrefsManager, user: LoginResponse?) {
+    val context = LocalContext.current
+    val cartManager = remember { CartManager(context) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     Column(
         modifier = modifier

@@ -41,7 +41,7 @@ import android.widget.Toast
 import com.example.stylish.R
 import com.example.stylish.ui.components.LoginComponents.validateRegistrationInput
 import com.example.stylish.data.Models.models.AddressInfo
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 @Composable
 fun RegisterScreen(navController: NavController ,prefs: PrefsManager) {
     Column(

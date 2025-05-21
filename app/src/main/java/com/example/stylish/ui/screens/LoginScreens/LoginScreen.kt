@@ -29,7 +29,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.sp
 import com.example.stylish.domain.shared.LoginRequest
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.domain.shared.Api_client
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
 import com.example.stylish.ui.components.LoginComponents.Header
@@ -151,6 +151,8 @@ fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
                             if (loginResponse != null) {
                                 prefs.saveUser(loginResponse)
                                 prefs.setLoggedIn(loginResponse)
+                                prefs.setLoggedIn(loginResponse)
+                                prefs.setCurrentUser(loginResponse.username)
                                 Toast.makeText(context, "Login Successful (API)", Toast.LENGTH_SHORT).show()
                                 Log.d("successful","API login successful for user: ${loginResponse.username}")
                                 navController.currentBackStackEntry?.savedStateHandle?.set("user", loginResponse)

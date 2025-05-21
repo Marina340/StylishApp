@@ -19,7 +19,7 @@ import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.CategoryRow
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.ui.components.Homepage.BannerSection
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 
@@ -28,7 +28,6 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 @Composable
 fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginResponse?) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
-
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(

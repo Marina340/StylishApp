@@ -33,8 +33,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.Models.models.ShoppinglistItemModel
 import com.example.stylish.ui.components.LoginComponents.ButtonComponent
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -42,9 +44,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
-fun Checkout( navController: NavController) {
+fun Checkout( navController: NavController,prefsManager: PrefsManager) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
+    val username = remember { prefsManager.getLoggedInUsername() }
+    val user = remember(username) {
+        username?.let { prefsManager.getUserProfile(it) }
+    }
+
     val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
     val shoppingListFromCart = cartItems.map { product ->
         ShoppinglistItemModel(
@@ -57,31 +64,9 @@ fun Checkout( navController: NavController) {
             itemPrice = product.price ?: 0.0
         )
     }
+
     val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
 
-//    val shoppingList = listOf(
-//        ShoppinglistItemModel(
-//            R.drawable.item_image,
-//            "Women’s Casual Wear",
-//            listOf("black", "red"),
-//            4.0,
-//            36.6
-//        ),
-//        ShoppinglistItemModel(
-//            R.drawable.item_image,
-//            "Men’s Sport Jacket",
-//            listOf("blue", "green"),
-//            4.5,
-//            59.9
-//        ),
-//        ShoppinglistItemModel(
-//            R.drawable.item_image,
-//            "Kid’s Hoodie",
-//            listOf("yellow", "pink"),
-//            4.2,
-//            25.3
-//        )
-//    )
 
     Scaffold(
         containerColor = Color.White,
@@ -129,6 +114,7 @@ fun Checkout( navController: NavController) {
                 }
 
                 item {
+                    val addressText = "${user?.address?.pincode} ${user?.address?.address}, ${user?.address?.state} : ${user?.address?.city}"
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -159,7 +145,7 @@ fun Checkout( navController: NavController) {
                                 }
                                 Spacer(Modifier.height(5.dp))
                                 Text(
-                                    text = "216 St Paul's Rd, London N1 2LL, UK\nContact :  +44-784232",
+                                    text =addressText,
                                     color = Color.Black
                                 )
                             }
@@ -177,13 +163,16 @@ fun Checkout( navController: NavController) {
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.Center
                             ) {
+                                IconButton(onClick = {
+                                    navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+                                    navController.navigate("profile") }) {
                                 Icon(
                                     painter = painterResource(id = R.drawable.add_circle_icon),
                                     contentDescription = "Add icon",
                                     tint = Color.Black,
                                     modifier = Modifier.size(26.dp)
                                 )
-                            }
+                            }}
                         }
                     }
                 }

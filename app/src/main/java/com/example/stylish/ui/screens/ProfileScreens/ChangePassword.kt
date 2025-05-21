@@ -36,7 +36,7 @@ import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import com.example.stylish.ui.theme.MontserratFontThin
 import android.widget.Toast
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 
 
 @Composable

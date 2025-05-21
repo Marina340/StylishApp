@@ -37,6 +37,8 @@ class CartManager(private val context: Context) {
         }
     }
     suspend fun clearCart() {
-        context.cartDataStore.edit { it.remove(CART_KEY) }
+        context.cartDataStore.edit { preferences ->
+            preferences.remove(CART_KEY)
+        }
     }
 }

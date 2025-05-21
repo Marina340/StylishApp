@@ -1,7 +1,7 @@
 package com.example.stylish.ui.components.LoginComponents
 
 import android.content.Context
-import com.example.stylish.domain.shared.LoginResponse
+import com.example.stylish.data.Models.LoginResponse
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
@@ -86,18 +86,38 @@ class PrefsManager(context: Context) {
     // ✅ حفظ حالة تسجيل الدخول
     fun setLoggedIn(user: LoginResponse) {
         saveUser(user)
-        prefs.edit().putBoolean("is_logged_in", true).apply()
+        prefs.edit()
+            .putBoolean("is_logged_in", true)
+            .putString("logged_in_username", user.username)
+            .apply()
     }
 
     // ✅ التحقق من حالة تسجيل الدخول
     fun isLoggedIn(): Boolean {
         return prefs.getBoolean("is_logged_in", false)
     }
+    fun getLoggedInUsername(): String? {
+        val users = getUserList()
+        return if (isLoggedIn() && users.isNotEmpty()) users.last().username else null
+    }
+
+    private val CURRENT_USER_KEY = "current_logged_in_user"
 
     // ✅ تسجيل الخروج
     fun logout() {
         prefs.edit().putBoolean("is_logged_in", false).apply()
+        prefs.edit().remove(CURRENT_USER_KEY).apply()
     }
+    fun setCurrentUser(username: String) {
+        prefs.edit().putString(CURRENT_USER_KEY, username).apply()
+    }
+
+    fun getCurrentUser(): LoginResponse? {
+        val username = prefs.getString(CURRENT_USER_KEY, null)
+        return if (username != null) getUserProfile(username) else null
+    }
+
+
 
 
 }
