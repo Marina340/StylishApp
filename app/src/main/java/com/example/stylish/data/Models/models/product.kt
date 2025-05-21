@@ -15,5 +15,6 @@ data class Productt(
     @SerializedName("stock") val stock: Int,
     @SerializedName("thumbnail") val thumbnail: String,
     val category: String, // Added category for clarity
-    val isFavorite: Boolean = false
+    val isFavorite: Boolean = false,
+    val quantity: Int = 1
 ) : Parcelable

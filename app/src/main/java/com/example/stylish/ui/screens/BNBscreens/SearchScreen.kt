@@ -87,13 +87,14 @@ fun SearchScreen(navController: NavController) {
 //        }
         item {
             ProductGridd(
-                viewModel = viewModel,
-                category = searchQuery,
+                products = viewModel.products,
+                isLoading = viewModel.isLoading,
+                onToggleFavorite = { viewModel.toggleFavorite(it) },
                 onProductClick = { product ->
                     navController.currentBackStackEntry
                         ?.savedStateHandle
                         ?.set("product", product)
-                    navController.navigate(Screen.ProductDetail.route)
+                    navController.navigate(Screen.ProductDetail.createRoute(product.id))
                 }
             )
         }
