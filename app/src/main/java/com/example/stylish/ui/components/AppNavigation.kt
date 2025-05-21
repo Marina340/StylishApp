@@ -42,7 +42,6 @@ fun AppNavigation(context: Context = LocalContext.current) {
     val productsViewModel = remember { ProductsViewModel(favoriteDataStore) }
 
     var startDestination by remember { mutableStateOf<String?>(null) }
-    val coroutineScope = rememberCoroutineScope()
 
     // Check onboarding flag
     LaunchedEffect(Unit) {
@@ -74,8 +73,11 @@ fun AppNavigation(context: Context = LocalContext.current) {
             composable("register") {
                 RegisterScreen(navController, prefsManager)
             }
-            composable("main") { backStackEntry ->
-                var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+            composable("main") {
+//                backStackEntry ->
+//                var user = navController.previousBackStackEntry?.savedStateHandle?.get<LoginResponse>("user")
+                val username = prefsManager.getLoggedInUsername()
+                val user = username?.let { prefsManager.getUserProfile(it) }
                 MainScreen(navController, prefsManager, user)
             }
             composable("profile") { backStackEntry ->

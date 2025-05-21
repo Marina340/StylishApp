@@ -17,22 +17,22 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.stylish.data.Models.LoginResponse
 import com.example.stylish.data.Models.models.ProductsViewModelFactory
 import com.example.stylish.presentation.widget.ProductGridd
 import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.CategoryRow
-import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.ui.components.Homepage.BannerSection
 import com.example.stylish.data.local.FavoriteDataStore
 import com.example.stylish.presentation.widget.ProductsViewModel
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import kotlinx.coroutines.launch
-import okhttp3.internal.platform.android.BouncyCastleSocketAdapter.Companion.factory
 
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, user: LoginResponse?) {
+fun HomeScreen(navController: NavController,prefsManager: PrefsManager, user: LoginResponse?) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -51,7 +51,7 @@ fun HomeScreen(navController: NavController, user: LoginResponse?) {
         drawerState = drawerState,
         drawerContent = {
 
-            SidebarUI(navController = navController, currentRoute = currentRoute , user)
+            SidebarUI(navController = navController,prefsManager, currentRoute = currentRoute , user)
         }
     )
     {

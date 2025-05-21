@@ -83,27 +83,14 @@ fun ShoppingListItemComponent(shoppinglistItemModel: ShoppinglistItemModel) {
                         verticalAlignment = Alignment.CenterVertically
                     ){
                     Text(
-                        text = "Variations : ",
+                        text = "Quantity : ",
                         color = Color.Black
                     )
-                        LazyRow(
-                            horizontalArrangement = Arrangement.spacedBy(8.dp), // spacing between items
-                            modifier = Modifier.padding(top = 4.dp)
-                        ){
-                          items(shoppinglistItemModel.variation){
-                              variation->Card(
-                              border = BorderStroke(1.dp, Color.Black),
-                              shape = RoundedCornerShape(0.dp),
-                              colors = CardDefaults.cardColors(containerColor = Color.White)
-                          ) {
-                              Text(
-                                  text = variation,
-                                  color = Color.Black,
-                                  modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
-                              )
-                          }
-                          }
-                        }
+                        Text(
+                            text = shoppinglistItemModel.quantity.toString(),
+                        color = Color.Black,
+                        modifier = Modifier.padding(horizontal = 4.dp, vertical = 2.dp)
+                        )
                     }
                     Row(
                         verticalAlignment = Alignment.CenterVertically
@@ -181,7 +168,7 @@ fun ShoppingListItemComponent(shoppinglistItemModel: ShoppinglistItemModel) {
                     fontWeight = FontWeight.Bold
                 )
                 Text(
-                    text = "$ ${shoppinglistItemModel.itemPrice}",
+                    text = "$ ${shoppinglistItemModel.itemPrice*shoppinglistItemModel.quantity}",
                     color = Color.Black,
                     fontWeight = FontWeight.Bold
                 )

@@ -81,14 +81,15 @@ fun SettingsContent(modifier: Modifier = Modifier, navController: NavController,
         SettingItem(
             title = "Notification Settings",
             iconRes = R.drawable.ic_notification,
-            onClick = { navController.navigate("notification") }
+//            onClick = { navController.navigate("notification") }
         )
         Divider(color = Color.LightGray, thickness = 0.5.dp)
 
         SettingItem(
             title = "Password Manager",
             iconRes = R.drawable.ic_password,
-            onClick = { navController.navigate("password") }
+            onClick = { navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+                navController.navigate("changePassword" )}
         )
         Divider(color = Color.LightGray, thickness = 0.5.dp)
 

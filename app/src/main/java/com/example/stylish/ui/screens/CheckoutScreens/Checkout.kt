@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("ResourceAsColor")
 @Composable
-fun Checkout( navController: NavController,prefsManager: PrefsManager) {
+fun Checkout(navController: NavController, prefsManager: PrefsManager) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
     val username = remember { prefsManager.getLoggedInUsername() }
@@ -55,28 +55,25 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
     val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
     val shoppingListFromCart = cartItems.map { product ->
         ShoppinglistItemModel(
-            image = product.thumbnail ?:"",  // fallback if null
+            image = product.thumbnail ?: "",  // fallback if null
             itemName = product.title ?: "Unknown",                // String
-            variation =
-//            product.variations ?:
-            listOf("N/A"),     // List<String>
+            quantity =product.quantity ,// List<String>
             itemRate = product.rating ?: 0.0,                    // Double
             itemPrice = product.price ?: 0.0
         )
     }
 
-    val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
-
-
+    val totalAmount = cartItems.sumOf { (it.price?.toDouble() ?: 0.0) * (it.quantity) }
+    val shippingFee = 3
     Scaffold(
         containerColor = Color.White,
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                        Text(
-                            text = "Checkout",
-                            fontWeight = FontWeight.Bold,
-                        )
+                    Text(
+                        text = "Checkout",
+                        fontWeight = FontWeight.Bold,
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = { navController.navigateUp() }) {
@@ -114,7 +111,8 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                 }
 
                 item {
-                    val addressText = "${user?.address?.pincode} ${user?.address?.address}, ${user?.address?.state} : ${user?.address?.city}"
+                    val addressText =
+                        "${user?.address?.pincode} ${user?.address?.address}, ${user?.address?.state} : ${user?.address?.city}"
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -145,7 +143,7 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                                 }
                                 Spacer(Modifier.height(5.dp))
                                 Text(
-                                    text =addressText,
+                                    text = addressText,
                                     color = Color.Black
                                 )
                             }
@@ -164,15 +162,20 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                                 horizontalArrangement = Arrangement.Center
                             ) {
                                 IconButton(onClick = {
-                                    navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
-                                    navController.navigate("profile") }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.add_circle_icon),
-                                    contentDescription = "Add icon",
-                                    tint = Color.Black,
-                                    modifier = Modifier.size(26.dp)
-                                )
-                            }}
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                        "user",
+                                        user
+                                    )
+                                    navController.navigate("profile")
+                                }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.add_circle_icon),
+                                        contentDescription = "Add icon",
+                                        tint = Color.Black,
+                                        modifier = Modifier.size(26.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -221,7 +224,7 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                                 color = Color(0xFF9E9E9E)
                             )
                             Text(
-                                text = "$3",
+                                text = "$${shippingFee}",
                                 color = Color(0xFF9E9E9E)
                             )
                         }
@@ -236,7 +239,7 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                                 color = Color.Black
                             )
                             Text(
-                                text = (totalAmount+70).toString(),
+                                text = "$${totalAmount + shippingFee}",
                                 color = Color.Black
                             )
                         }
@@ -246,19 +249,19 @@ fun Checkout( navController: NavController,prefsManager: PrefsManager) {
                                 .height(1.dp)
                                 .background(Color(R.color.ColorNeutral60))
                         )
-                        Spacer(modifier= Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = "Payment",
                             color = Color.Black,
                         )
-                        Spacer(modifier= Modifier.height(10.dp))
-                        PaymentCardComponent(R.drawable.visa,"*********2109")
-                        Spacer(modifier= Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(10.dp))
+                        PaymentCardComponent(R.drawable.visa, "*********2109")
+                        Spacer(modifier = Modifier.height(10.dp))
 
                     }
 
                 }
-                item{
+                item {
                     CheckoutScreen()
                 }
 

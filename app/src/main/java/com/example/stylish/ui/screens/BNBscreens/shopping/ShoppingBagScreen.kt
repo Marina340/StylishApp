@@ -62,8 +62,8 @@ fun ShoppingBagScreen(navController: NavController) {
     val totalAmount by remember(cartItems, selectedQtyMap) {
         derivedStateOf {
             cartItems.sumOf { item ->
-                val qty = selectedQtyMap[item.id]?.toIntOrNull() ?: 1
-                (item.price * qty).toInt()
+                val qty = selectedQtyMap[item.id]?.toDoubleOrNull() ?: 1.0
+                (item.price * qty).toDouble()
             }
         }
     }
@@ -100,7 +100,7 @@ fun ShoppingBagScreen(navController: NavController) {
                     ) {
                         Column {
                             Text(
-                                "₹ ${totalAmount}.00",
+                                "₹ ${totalAmount}",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp
                             )
@@ -297,7 +297,7 @@ fun ShoppingBagScreen(navController: NavController) {
             Text("Order Payment Details", fontWeight = FontWeight.Bold, fontSize = 20.sp)
 
             Box(modifier = Modifier.padding(top = 15.dp)) {
-                OrderDetailRow("Order Amounts", "₹ $totalAmount.00")
+                OrderDetailRow("Order Amounts", "₹ $totalAmount")
             }
 
             Row(

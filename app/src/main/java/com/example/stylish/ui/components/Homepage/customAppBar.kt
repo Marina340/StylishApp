@@ -34,9 +34,9 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopBar(
-    navController: NavController, prefs: PrefsManager,
-    user: LoginResponse?,
-    onMenuClick: () -> Unit
+    navController: NavController,
+    user: LoginResponse?
+    ,onMenuClick: () -> Unit
 ) {
     val profileImageUri = user?.image.takeIf { !it.isNullOrEmpty() }
         ?: "android.resource://${LocalContext.current.packageName}/${R.drawable.img}"
