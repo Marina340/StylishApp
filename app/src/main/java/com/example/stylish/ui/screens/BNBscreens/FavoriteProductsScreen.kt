@@ -10,17 +10,27 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.stylish.data.Models.models.ProductsViewModelFactory
+import com.example.stylish.data.local.FavoriteDataStore
 import com.example.stylish.presentation.widget.ProductCardd
 import com.example.stylish.presentation.widget.ProductsViewModel
 import com.example.stylish.presentation.widget.Screen
 
 @Composable
-fun WishlistPage(navController: NavController, viewModel: ProductsViewModel = viewModel()) {
+fun WishlistPage(navController: NavController) {
+    val context = LocalContext.current
+    val favoriteDataStore = remember { FavoriteDataStore(context) }
+
+    val viewModel: ProductsViewModel = viewModel(
+        factory = ProductsViewModelFactory(favoriteDataStore)
+    )
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = "Wishlist",
@@ -47,7 +57,7 @@ fun WishlistPage(navController: NavController, viewModel: ProductsViewModel = vi
                             navController.currentBackStackEntry  // ← NEW
                                 ?.savedStateHandle
                                 ?.set("product", selected)       // ← NEW
-                            navController.navigate(Screen.ProductDetail.route) // ← NEW
+                            navController.navigate(Screen.ProductDetail.createRoute(product.id)) // ← NEW
                         }
                     )
                 }

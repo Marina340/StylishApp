@@ -1,4 +1,5 @@
 package com.example.stylish.presentation.pages
+
 import CartManager
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -11,23 +12,23 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.example.stylish.R
@@ -35,16 +36,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShoppingBagScreen(navController: NavController) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
     val cartItems by cartManager.cartItems.collectAsState(initial = emptyList())
     val scope = rememberCoroutineScope()
-    val totalAmount = cartItems.sumOf { it.price?.toInt() ?: 0 }
-    val excludedCategories = listOf("womens-bags", "womens-jewellery", "womens-watches",
-        "mens-watches", "skin-care", "beauty")
 
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    val excludedCategories = listOf(
+        "womens-bags", "womens-jewellery", "womens-watches",
+        "mens-watches", "skin-care", "beauty"
+    )
 
     val pinkColor = Color(0xFFE91E63)
     val lightGray = Color(0xFFF5F5F5)
@@ -53,7 +58,18 @@ fun ShoppingBagScreen(navController: NavController) {
     val selectedQtyMap = remember { mutableStateMapOf<Int, String>() }
     val expandedSizeMap = remember { mutableStateMapOf<Int, Boolean>() }
     val expandedQtyMap = remember { mutableStateMapOf<Int, Boolean>() }
+
+    val totalAmount by remember(cartItems, selectedQtyMap) {
+        derivedStateOf {
+            cartItems.sumOf { item ->
+                val qty = selectedQtyMap[item.id]?.toIntOrNull() ?: 1
+                (item.price * qty).toInt()
+            }
+        }
+    }
+
     Scaffold(
+        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         bottomBar = {
             Box(
                 modifier = Modifier
@@ -98,8 +114,15 @@ fun ShoppingBagScreen(navController: NavController) {
                         }
                         Button(
                             onClick = {
-                                scope.launch {
-                                    navController.navigate("checkout")
+                                if (cartItems.isEmpty()) {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("No items in the cart!")
+
+                                    }
+                                } else {
+                                    scope.launch {
+                                        navController.navigate("checkout")
+                                    }
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(containerColor = pinkColor),
@@ -132,7 +155,7 @@ fun ShoppingBagScreen(navController: NavController) {
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { navController.navigateUp()  }
+                        .clickable { navController.navigateUp() }
                 )
                 Text(
                     "Shopping Bag",
@@ -155,7 +178,7 @@ fun ShoppingBagScreen(navController: NavController) {
             cartItems.forEach { item ->
                 // Initialize selectedSize and Qty if not set
                 if (!selectedSizeMap.containsKey(item.id)) selectedSizeMap[(item.id)] = "42"
-                if (!selectedQtyMap.containsKey(item.id)) selectedQtyMap[(item.id)] = "1"
+                if (!selectedQtyMap.containsKey(item.id)) selectedQtyMap[item.id] = item.quantity.toString()
                 if (!expandedSizeMap.containsKey(item.id)) expandedSizeMap[(item.id)] = false
                 if (!expandedQtyMap.containsKey(item.id)) expandedQtyMap[(item.id)] = false
 
@@ -164,10 +187,8 @@ fun ShoppingBagScreen(navController: NavController) {
                         .fillMaxWidth()
                         .padding(bottom = 16.dp)
                 ) {
-                    // Show product image if URL or resource id exists
-                    // For demonstration, using painterResource as placeholder
                     Image(
-                        painter = rememberImagePainter(item.thumbnail), // Replace with your dynamic image loader if available
+                        painter = rememberImagePainter(item.thumbnail),
                         contentDescription = item.description,
                         modifier = Modifier
                             .size(150.dp)
@@ -212,6 +233,10 @@ fun ShoppingBagScreen(navController: NavController) {
                                 onItemClick = {
                                     selectedQtyMap[item.id] = it
                                     expandedQtyMap[item.id] = false
+                                    val updatedProduct = item.copy(quantity = it.toInt())
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        cartManager.updateCartItem(updatedProduct)
+                                    }
                                 },
                                 onDismiss = {
                                     expandedQtyMap[item.id] = false
@@ -355,7 +380,7 @@ fun DropdownBox(
     onClick: () -> Unit,
     items: List<String>,
     onItemClick: (String) -> Unit,
-    onDismiss: () -> Unit  // Add this param
+    onDismiss: () -> Unit
 ) {
     Box(modifier = Modifier.height(36.dp)) {
         Row(

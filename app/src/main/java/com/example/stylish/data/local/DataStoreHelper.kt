@@ -7,9 +7,13 @@ import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
+// Single, global DataStore instance for preferences
 val Context.dataStore by preferencesDataStore(name = "settings")
+
+// Onboarding key
 val ONBOARDING_KEY = booleanPreferencesKey("onboarding_completed")
 
+// Onboarding helper functions
 suspend fun isOnboardingCompleted(context: Context): Boolean {
     return context.dataStore.data.map { prefs ->
         prefs[ONBOARDING_KEY] ?: false

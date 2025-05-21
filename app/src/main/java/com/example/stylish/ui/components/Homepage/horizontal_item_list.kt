@@ -1,23 +1,23 @@
 package com.example.stylish.presentation.widget
+
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.stylish.data.Models.models.Productt
-
-//
 
 @Composable
 fun ProductHorizontalList(
-    viewModel: ProductsViewModel = viewModel(),
+    products: List<Productt>,
+    isLoading: Boolean,
+    onToggleFavorite: (Productt) -> Unit,
     onProductClick: (Productt) -> Unit
 ) {
     Box(
@@ -26,7 +26,7 @@ fun ProductHorizontalList(
             .heightIn(min = 200.dp, max = 250.dp)
     ) {
         when {
-            viewModel.isLoading -> {
+            isLoading -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.Center,
@@ -37,9 +37,9 @@ fun ProductHorizontalList(
                     Text("Loading products...")
                 }
             }
-            viewModel.error != null -> {
+            products.isEmpty() -> {
                 Text(
-                    text = "Error: ${viewModel.error}",
+                    text = "No products found.",
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
@@ -52,12 +52,14 @@ fun ProductHorizontalList(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
-                    items(viewModel.products) { product ->
+                    items(
+                        items = products.take(10),
+                        key = { it.id }
+                    ) { product ->
                         ProductCardd(
                             product = product,
-                            onFavoriteClick = { viewModel.toggleFavorite(it) },
-                            onProductClick = onProductClick,
-                            // modifier = Modifier.width(160.dp)
+                            onFavoriteClick = { onToggleFavorite(product) },
+                            onProductClick = onProductClick
                         )
                     }
                 }

@@ -7,46 +7,61 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import com.example.stylish.data.Models.models.ProductsViewModelFactory
 import com.example.stylish.presentation.widget.ProductGridd
 import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.CategoryRow
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.navigation.compose.currentBackStackEntryAsState
-import kotlinx.coroutines.launch
-import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.ui.components.Homepage.BannerSection
-import com.example.stylish.ui.components.LoginComponents.PrefsManager
+import com.example.stylish.data.local.FavoriteDataStore
+import com.example.stylish.presentation.widget.ProductsViewModel
+import kotlinx.coroutines.launch
+import okhttp3.internal.platform.android.BouncyCastleSocketAdapter.Companion.factory
 
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginResponse?) {
+fun HomeScreen(navController: NavController, user: LoginResponse?) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+
+    // Create FavoriteDataStore and ViewModel Factory
+    val context = LocalContext.current
+    val favoriteDataStore = remember(context) { FavoriteDataStore(context) }
+    val factory = remember { ProductsViewModelFactory(favoriteDataStore) }
+    val productsViewModel: ProductsViewModel = viewModel(factory = factory)
+
+    val products = productsViewModel.products
+    val isLoading = productsViewModel.isLoading
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
 
-            SidebarUI(navController = navController, prefs ,currentRoute = currentRoute , user)
+            SidebarUI(navController = navController, currentRoute = currentRoute , user)
         }
     )
     {
         Scaffold(
             topBar = {
                 CustomTopBar(
-                    navController = navController,prefs,
+                    navController = navController,
                     user,
                     onMenuClick = {
-                        scope.launch {
-                            drawerState.open()
-                        }
+                        scope.launch { drawerState.open() }
                     }
                 )
             }
@@ -65,14 +80,12 @@ fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginRes
                             fontWeight = FontWeight.Bold,
                             fontSize = 18.sp
                         )
-                        CategoryRow(
-                            onCategoryClick = { categorySlug ->
-                                navController.navigate("products/$categorySlug")
-                            }
-                        )
+                        CategoryRow(onCategoryClick = { categorySlug ->
+                            navController.navigate("products/$categorySlug")
+                        })
                     }
                 }
-                item { BannerSection(    navController = navController) }
+                item { BannerSection(navController = navController) }
                 item {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
@@ -82,14 +95,19 @@ fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginRes
                     )
                 }
                 item {
-                    ProductHorizontalList(onProductClick = { product ->
-                        navController.currentBackStackEntry
-                            ?.savedStateHandle
-                            ?.set("product", product)
-                        navController.navigate(Screen.ProductDetail.route)
-                    })
+                    ProductHorizontalList(
+                        products = products,
+                        isLoading = isLoading,
+                        onToggleFavorite = { productsViewModel.toggleFavorite(it) },
+                        onProductClick = { product ->
+                            navController.currentBackStackEntry
+                                ?.savedStateHandle
+                                ?.set("product", product)
+                            navController.navigate(Screen.ProductDetail.createRoute(product.id))
+                        }
+                    )
                 }
-                item { DealsSection( navController) }
+                item { DealsSection(navController) }
                 item {
                     Text(
                         modifier = Modifier.padding(start = 16.dp),
@@ -100,11 +118,14 @@ fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginRes
                 }
                 item {
                     ProductGridd(
+                        products = products,
+                        isLoading = isLoading,
+                        onToggleFavorite = { productsViewModel.toggleFavorite(it) },
                         onProductClick = { product ->
                             navController.currentBackStackEntry
                                 ?.savedStateHandle
                                 ?.set("product", product)
-                            navController.navigate(Screen.ProductDetail.route)
+                            navController.navigate(Screen.ProductDetail.createRoute(product.id))
                         }
                     )
                 }
