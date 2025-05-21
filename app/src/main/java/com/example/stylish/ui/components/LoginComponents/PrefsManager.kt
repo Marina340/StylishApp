@@ -81,4 +81,23 @@ class PrefsManager(context: Context) {
         prefs.edit().putString("user_list", json).apply()
     }
 
+    // PrefsManager.kt
+
+    // ✅ حفظ حالة تسجيل الدخول
+    fun setLoggedIn(user: LoginResponse) {
+        saveUser(user)
+        prefs.edit().putBoolean("is_logged_in", true).apply()
+    }
+
+    // ✅ التحقق من حالة تسجيل الدخول
+    fun isLoggedIn(): Boolean {
+        return prefs.getBoolean("is_logged_in", false)
+    }
+
+    // ✅ تسجيل الخروج
+    fun logout() {
+        prefs.edit().putBoolean("is_logged_in", false).apply()
+    }
+
+
 }

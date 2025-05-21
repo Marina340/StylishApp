@@ -24,6 +24,7 @@ import coil.compose.rememberImagePainter
 import com.example.stylish.R
 import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.theme.DatkPink
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +34,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomTopBar(
-    navController: NavController,
+    navController: NavController, prefs: PrefsManager,
     user: LoginResponse?,
     onMenuClick: () -> Unit
 ) {
@@ -88,7 +89,7 @@ fun CustomTopBar(
     )
 }
 @Composable
-fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginResponse?) {
+fun SidebarUI(navController: NavController,prefs: PrefsManager , currentRoute: String? , user: LoginResponse?) {
     val context = LocalContext.current
     val cartManager = remember { CartManager(context) }
     Box(
@@ -197,6 +198,7 @@ fun SidebarUI(navController: NavController, currentRoute: String? , user: LoginR
                         CoroutineScope(Dispatchers.IO).launch {
                             cartManager.clearCart()
                             withContext(Dispatchers.Main) {
+                                prefs.logout()
                                 navController.navigate("login") {
                                     launchSingleTop = true
                                 }

@@ -1,6 +1,7 @@
-package com.example.stylish.domain.shared
+package com.example.stylish.data.Models
 
 import android.os.Parcelable
+import com.example.stylish.data.Models.Domain.shared.AddressInfo
 import com.example.stylish.data.Models.models.AddressInfo
 import kotlinx.parcelize.Parcelize
 

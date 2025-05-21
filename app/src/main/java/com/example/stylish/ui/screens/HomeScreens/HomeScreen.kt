@@ -21,11 +21,12 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import kotlinx.coroutines.launch
 import com.example.stylish.domain.shared.LoginResponse
 import com.example.stylish.ui.components.Homepage.BannerSection
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, user: LoginResponse?) {
+fun HomeScreen(navController: NavController, prefs: PrefsManager, user: LoginResponse?) {
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -34,14 +35,14 @@ fun HomeScreen(navController: NavController, user: LoginResponse?) {
         drawerState = drawerState,
         drawerContent = {
 
-            SidebarUI(navController = navController, currentRoute = currentRoute , user)
+            SidebarUI(navController = navController, prefs ,currentRoute = currentRoute , user)
         }
     )
     {
         Scaffold(
             topBar = {
                 CustomTopBar(
-                    navController = navController,
+                    navController = navController,prefs,
                     user,
                     onMenuClick = {
                         scope.launch {

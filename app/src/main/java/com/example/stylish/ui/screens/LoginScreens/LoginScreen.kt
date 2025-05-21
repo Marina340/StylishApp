@@ -136,6 +136,7 @@ fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
             var localUser = prefs.findUser(username, password)
 
             if (localUser != null) {
+                prefs.setLoggedIn(localUser)
                 Toast.makeText(context, "Login Successful (Local)", Toast.LENGTH_SHORT).show()
                 Log.i("successful","Local login successful for user: ${localUser.username}")
                 navController.currentBackStackEntry?.savedStateHandle?.set("user", localUser)
@@ -149,6 +150,7 @@ fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
                             val loginResponse = response.body()
                             if (loginResponse != null) {
                                 prefs.saveUser(loginResponse)
+                                prefs.setLoggedIn(loginResponse)
                                 Toast.makeText(context, "Login Successful (API)", Toast.LENGTH_SHORT).show()
                                 Log.d("successful","API login successful for user: ${loginResponse.username}")
                                 navController.currentBackStackEntry?.savedStateHandle?.set("user", loginResponse)

@@ -70,9 +70,6 @@ fun SettingsScreen(navController: NavController , prefsManager: PrefsManager, us
 @Composable
 fun SettingsContent(modifier: Modifier = Modifier, navController: NavController, prefsManager: PrefsManager, user: LoginResponse?) {
     var showDeleteDialog by remember { mutableStateOf(false) }
-    val context = LocalContext.current
-    val cartManager = remember { CartManager(context) }
-
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -122,6 +119,7 @@ fun SettingsContent(modifier: Modifier = Modifier, navController: NavController,
                 CoroutineScope(Dispatchers.IO).launch {
                     cartManager.clearCart()
                     withContext(Dispatchers.Main) {
+                        prefsManager.logout()
                         navController.navigate("login")
                     }
                 }
@@ -262,6 +260,7 @@ fun confirmBox(navController: NavController,
             onDismiss = { onDismiss() },
             onAgree = {
                 if (user != null) {
+                    prefsManager.logout()
                     prefsManager.deleteUser(user.username)
                 }
                 showDialog = false

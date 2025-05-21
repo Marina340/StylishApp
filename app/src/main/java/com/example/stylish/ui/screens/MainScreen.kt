@@ -24,7 +24,7 @@ fun MainScreen(navController: NavController,prefs: PrefsManager , user : LoginRe
     ) { paddingValues ->
         Column(modifier = Modifier.padding(paddingValues)) {
             when (selectedScreen) {
-                0 -> HomeScreen(navController,user)
+                0 -> HomeScreen(navController, prefs,user)
                 1 -> SearchScreen(navController)
                 2 -> ShoppingBagScreen(navController)
                 3 -> WishlistPage(navController)
