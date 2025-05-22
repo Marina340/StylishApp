@@ -17,16 +17,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.stylish.data.Models.models.ProductsViewModelFactory
+import com.example.stylish.data.local.ProductsViewModelFactory
 import com.example.stylish.data.local.FavoriteDataStore
+import com.example.stylish.domain.api.ProductsViewModel
 import com.example.stylish.presentation.widget.ProductCardd
-import com.example.stylish.presentation.widget.ProductsViewModel
 import com.example.stylish.presentation.widget.Screen
+import com.example.stylish.ui.components.LoginComponents.PrefsManager
 
 @Composable
-fun WishlistPage(navController: NavController) {
+fun WishlistPage(navController: NavController, prefsManager: PrefsManager) {
+    val username = prefsManager.getLoggedInUsername()
     val context = LocalContext.current
-    val favoriteDataStore = remember { FavoriteDataStore(context) }
+    val favoriteDataStore = remember { FavoriteDataStore(context,username ?: "guest") }
 
     val viewModel: ProductsViewModel = viewModel(
         factory = ProductsViewModelFactory(favoriteDataStore)

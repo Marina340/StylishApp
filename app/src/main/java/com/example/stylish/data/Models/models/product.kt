@@ -18,3 +18,13 @@ data class Productt(
     val isFavorite: Boolean = false,
     val quantity: Int = 1
 ) : Parcelable
+
+
+//data class Product(
+//    val id: Int,
+//    val title: String,
+//    val description: String,
+//    val price: Double,
+//    val rating: Float,
+//    val thumbnail: String
+//)

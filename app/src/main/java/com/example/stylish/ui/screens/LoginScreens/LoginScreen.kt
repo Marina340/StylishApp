@@ -151,8 +151,8 @@ fun LoginScreen(navController: NavController ,prefs: PrefsManager) {
                             if (loginResponse != null) {
                                 prefs.saveUser(loginResponse)
                                 prefs.setLoggedIn(loginResponse)
-                                prefs.setLoggedIn(loginResponse)
-                                prefs.setCurrentUser(loginResponse.username)
+//                                prefs.setLoggedIn(loginResponse)
+//                                prefs.setCurrentUser(loginResponse.username)
                                 Toast.makeText(context, "Login Successful (API)", Toast.LENGTH_SHORT).show()
                                 Log.d("successful","API login successful for user: ${loginResponse.username}")
                                 navController.currentBackStackEntry?.savedStateHandle?.set("user", loginResponse)

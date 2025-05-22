@@ -30,28 +30,20 @@ import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.data.Models.models.Productt
 import com.example.stylish.data.local.FavoriteDataStore
-import com.example.stylish.presentation.widget.ProductsViewModel
 import kotlinx.coroutines.launch
+import com.example.stylish.domain.api.ProductsViewModel
 
 @Composable
 fun ProductDetailScreen(
     productId: Int,
+    product: Productt,
     navController: NavController,
     favoriteDataStore: FavoriteDataStore,
     viewModel: ProductsViewModel
 ) {
-    val productState = remember(productId) {
-        mutableStateOf(viewModel.getProductById(productId))
-    }
-
-    val product = productState.value
-
-    if (product == null) {
-        Text("Product not found")
-        return
-    }
-
+    // Remove this state retrieval from ViewModel, use the passed-in product
     val coroutineScope = rememberCoroutineScope()
+    var productState by remember { mutableStateOf(product) }
 
     var selectedSize by remember { mutableStateOf("7 UK") }
     var showFullDescription by remember { mutableStateOf(false) }
@@ -67,11 +59,10 @@ fun ProductDetailScreen(
     ) {
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Product Image Box with Back and Favorite buttons
         Box(modifier = Modifier.fillMaxWidth()) {
             Image(
-                painter = rememberImagePainter(product.thumbnail),
-                contentDescription = product.title,
+                painter = rememberImagePainter(productState.thumbnail),
+                contentDescription = productState.title,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(300.dp),
@@ -94,8 +85,8 @@ fun ProductDetailScreen(
             IconButton(
                 onClick = {
                     coroutineScope.launch {
-                        viewModel.toggleFavorite(product) // ✅ pass the entire object
-                        productState.value = viewModel.getProductById(productId)
+                        viewModel.toggleFavorite(productState)
+                        productState = viewModel.getProductById(productId) ?: productState
                     }
                 },
                 modifier = Modifier
@@ -103,13 +94,12 @@ fun ProductDetailScreen(
                     .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = if (product.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    imageVector = if (productState.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favorite",
-                    tint = if (product.isFavorite) Color.Red else Color.Black
+                    tint = if (productState.isFavorite) Color.Red else Color.Black
                 )
             }
         }
-
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
             Text(
                 text = product.title,
@@ -234,7 +224,6 @@ fun ProductDetailScreen(
                 )
             }
             Spacer(modifier = Modifier.height(8.dp))
-
             ProductHorizontalList(
                 products = viewModel.products,
                 isLoading = viewModel.isLoading,
@@ -242,9 +231,13 @@ fun ProductDetailScreen(
                     viewModel.toggleFavorite(clickedProduct)
                 },
                 onProductClick = { clickedProduct ->
-                    navController.navigate("productDetail/${clickedProduct.id}")
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("product", clickedProduct)
+                    navController.navigate(Screen.ProductDetail.createRoute(clickedProduct.id))
                 }
             )
+
         }
     }
 

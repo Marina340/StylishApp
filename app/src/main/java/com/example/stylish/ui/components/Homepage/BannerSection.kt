@@ -1,5 +1,4 @@
 package com.example.stylish.ui.components.Homepage
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -17,8 +16,6 @@ import com.example.stylish.R
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import com.example.stylish.ui.theme.Pink80
-
-
 //****************
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.layout.ContentScale
@@ -113,7 +110,7 @@ fun BannerSection(navController: NavController) {
                     modifier = Modifier
                         .size(10.dp)
                         .clip(
-                           CircleShape,
+                            CircleShape,
                         )
                         .background(color)
                         .padding(4.dp)
@@ -122,4 +119,3 @@ fun BannerSection(navController: NavController) {
         }
     }
 }
-

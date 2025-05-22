@@ -18,16 +18,16 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.stylish.data.Models.LoginResponse
-import com.example.stylish.data.Models.models.ProductsViewModelFactory
+import com.example.stylish.data.local.ProductsViewModelFactory
 import com.example.stylish.presentation.widget.ProductGridd
 import com.example.stylish.presentation.widget.ProductHorizontalList
 import com.example.stylish.presentation.widget.Screen
 import com.example.stylish.ui.screens.HomeScreens.categoriesScreens.CategoryRow
 import com.example.stylish.ui.components.Homepage.BannerSection
 import com.example.stylish.data.local.FavoriteDataStore
-import com.example.stylish.presentation.widget.ProductsViewModel
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import kotlinx.coroutines.launch
+import com.example.stylish.domain.api.ProductsViewModel
 
 //import com.example.stylish.ui.screens.GroupSelectionScreen
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,10 +37,11 @@ fun HomeScreen(navController: NavController,prefsManager: PrefsManager, user: Lo
 
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val username = user?.username ?: "guest" // Fallback in case user is null
 
     // Create FavoriteDataStore and ViewModel Factory
     val context = LocalContext.current
-    val favoriteDataStore = remember(context) { FavoriteDataStore(context) }
+    val favoriteDataStore = remember(username) { FavoriteDataStore(context,username ) }
     val factory = remember { ProductsViewModelFactory(favoriteDataStore) }
     val productsViewModel: ProductsViewModel = viewModel(factory = factory)
 

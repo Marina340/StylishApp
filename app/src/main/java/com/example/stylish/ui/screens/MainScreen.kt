@@ -5,14 +5,16 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.settingscreen.SettingScreens.SettingsScreen
 import com.example.stylish.data.Models.LoginResponse
+import com.example.stylish.domain.api.ProductsViewModel
 import com.example.stylish.presentation.components.BottomNavBar
 import com.example.stylish.ui.components.LoginComponents.PrefsManager
 import com.example.stylish.ui.screens.BNBscreens.WishlistPage
 @Composable
-fun MainScreen(navController: NavController,prefs: PrefsManager , user : LoginResponse?) {
+fun MainScreen(navController: NavController,prefs: PrefsManager , user : LoginResponse?,viewModel: ProductsViewModel) {
 //    val navController = rememberNavController()
 
     var selectedScreen by rememberSaveable { mutableStateOf(0) }
@@ -25,9 +27,9 @@ fun MainScreen(navController: NavController,prefs: PrefsManager , user : LoginRe
         Column(modifier = Modifier.padding(paddingValues)) {
             when (selectedScreen) {
                 0 -> HomeScreen(navController, prefs,user)
-                1 -> SearchScreen(navController)
+                1 -> SearchScreen(navController,viewModel)
                 2 -> ShoppingBagScreen(navController)
-                3 -> WishlistPage(navController)
+                3 -> WishlistPage(navController,prefs)
                 4 -> SettingsScreen(navController , prefs, user)
             }
         }

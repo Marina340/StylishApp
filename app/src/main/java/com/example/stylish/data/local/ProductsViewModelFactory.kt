@@ -1,9 +1,8 @@
-package com.example.stylish.data.Models.models
+package com.example.stylish.data.local
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.stylish.data.local.FavoriteDataStore
-import com.example.stylish.presentation.widget.ProductsViewModel
+import com.example.stylish.domain.api.ProductsViewModel
 
 class ProductsViewModelFactory(
     private val favoriteDataStore: FavoriteDataStore

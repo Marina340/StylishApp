@@ -12,29 +12,51 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.stylish.data.Models.models.Productt
 import com.example.stylish.presentation.widget.ProductGridd
-import com.example.stylish.presentation.widget.ProductsViewModel
 import com.example.stylish.presentation.widget.Screen
-
+import kotlinx.coroutines.launch
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
+import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.stylish.domain.api.ProductsViewModel
+import com.example.stylish.presentation.widget.ProductGridd
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchScreen(navController: NavController) {
-    val viewModel: ProductsViewModel = viewModel()
+fun SearchScreen(navController: NavController, viewModel: ProductsViewModel ) {
     var searchQuery by remember { mutableStateOf("") }
+    var lastQuery by remember { mutableStateOf("") }
 
+    // Debounce logic to avoid calling API on every keystroke instantly
     LaunchedEffect(searchQuery) {
-        if (searchQuery.isBlank()) {
-            viewModel.loadProducts(null) // load all products initially or on empty search
-        } else {
-            viewModel.loadProducts(searchQuery) // filtered products on search input
+        delay(400)
+        if (searchQuery != lastQuery) {
+            if (searchQuery.isBlank()) {
+                viewModel.loadProducts()
+            } else {
+                viewModel.searchProducts(searchQuery)
+            }
+            lastQuery = searchQuery
         }
     }
-
-    val isLoading = viewModel.isLoading
-    val error = viewModel.error
 
     LazyColumn(
         modifier = Modifier
@@ -43,8 +65,7 @@ fun SearchScreen(navController: NavController) {
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         item {
-
-            Row (){
+            Row {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
                     contentDescription = "Back",
@@ -61,7 +82,6 @@ fun SearchScreen(navController: NavController) {
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
             }
-
         }
 
         item {
@@ -77,14 +97,6 @@ fun SearchScreen(navController: NavController) {
             )
         }
 
-//        item {
-//            Spacer(modifier = Modifier.height(16.dp))
-//            Text(
-//                text = "Search Results",
-//                style = MaterialTheme.typography.headlineMedium,
-//                modifier = Modifier.padding(bottom = 8.dp)
-//            )
-//        }
         item {
             ProductGridd(
                 products = viewModel.products,
