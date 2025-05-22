@@ -48,7 +48,11 @@ fun AppNavigation(context: Context = LocalContext.current) {
     // Check onboarding flag
     LaunchedEffect(Unit) {
         val completed = isOnboardingCompleted(context)
-        startDestination = if (prefsManager.isLoggedIn()) "main" else "login"
+        startDestination = when {
+            !completed -> "onboarding"
+            prefsManager.isLoggedIn() -> "main"
+            else -> "login"
+        }
     }
 
     if (startDestination != null) {
